@@ -1,0 +1,71 @@
+.input_container {
+    max-width: 300px;
+    margin: 20px;
+}
+
+.input_container_upper_part {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input_container_upper_part label{
+    font-size: 13px;
+}
+
+.input_container_upper_part_optional {
+    display: flex;
+    align-items: center;
+}
+
+.input_container_upper_part_optional div{
+    display: flex;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    transition: background-image 0.3s ease-in-out;
+}
+
+.input_container_upper_part_optional p {
+    margin: 0;
+    margin-left: 10px;
+    font-size: 15px;
+    transition: color 0.3s ease;
+}
+
+.input_container_upper_part_optional p:hover{
+    color: black;
+}
+
+.input_container_lower_part{
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    padding: 5px;
+    width: 300px;
+    background-color: white;
+}
+
+.input_container_lower_part input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+}
+
+.input_container_lower_part input::selection{
+    color: white;
+    background-color: var(--light_purple);
+}
+
+.input_container_lower_part input:focus{
+    outline-color: var(--light_purple);
+}
+
+.input_container_lower_part div{
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    width: 30px; 
+    height: 30px; 
+}
