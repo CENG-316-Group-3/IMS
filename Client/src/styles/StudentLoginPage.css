@@ -75,3 +75,15 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.forgot_password_text{
+    margin: 0;
+    text-align: right;
+    font-size: 14px;
+    margin-right: 20px;
+}
+
+.forgot_password_text span:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
