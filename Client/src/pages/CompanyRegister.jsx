@@ -5,28 +5,34 @@ function CompanyRegister() {
 
     return (
         <div className='register_div'>
-            <div className='page_content'>
+            <div className='register_page_content'>
                 <h1>Create an account</h1>
-                <div id='register-container-blur'>
-                    <form>
-                        <label id=''>Company E-mail*:</label><br />
-                        <input type="email" id='email' name='email' /><br />
+                <div className='register-container-blur'>
+                    <div className='inside_form'>
+                        <form>
+                            <label id='form-content'>Company E-mail*:</label><br />
+                            <input type="email" id='email' name='email' /><br />
 
-                        <label>Company Name*:</label><br />
-                        <input type="text" id='company-name' name='company-name' /><br />
+                            <label id='form-content'>Company Name*:</label><br />
+                            <input type="text" id='company-name' name='company-name' /><br />
 
-                        <label>Password*:</label><br />
-                        <input type="password" id='password' name='password' /><br />
+                            <label id='form-content'>Password*:</label><br />
+                            <input type="password" id='password' name='password' /><br />
 
-                        <label>Confirm Password*:</label><br />
-                        <input type="password" id='confirm-password' name='confirm-password' /><br />
+                            <label id='form-content'>Confirm Password*:</label><br />
+                            <input type="password" id='confirm-password' name='confirm-password' /><br />
 
-                        <label>Company Address*:</label><br />
-                        <input type="text" id='address' name='address' /><br />
+                            <label id='form-content'>Company Address*:</label><br />
+                            <input type="text" id='address' name='address' /><br />
 
-                        <button type="submit">Sign Up</button>
-                        <p> Already have an account?</p><a href="./student-login">Login</a>
-                    </form>
+                            <button id='register_button' type="submit">Sign Up</button>
+                            <div className='already_login'>
+                                <p> Already have an account?</p> <a href="./company-login">Login</a>
+                            </div>
+
+                        </form>
+                    </div>
+
                 </div>
             </div>
 
