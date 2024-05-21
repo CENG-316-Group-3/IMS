@@ -6,7 +6,7 @@
 .left_section {
     width: 40%;
     height: 100vh;
-    background: linear-gradient(to bottom, var(--light_purple), var(--dark_purple));
+    background: linear-gradient(to bottom, var(--light_red), var(--dark_red));
     float: left;
     display: flex;                  
     justify-content: center;        
@@ -31,7 +31,7 @@
 }
 
 .right_section_panel:hover{
-    border-color: var(--light_purple);
+    border-color: var(--light_red);
 }
 
 .right_section_panel_inner {
@@ -41,7 +41,7 @@
 }
 
 .right_section_panel_inner h1{
-    color: var(--light_purple);
+    color: var(--light_red);
     font-family: 'Ponnala', sans-serif;
     font-size: 50px;
     line-height: 30px;
@@ -63,6 +63,7 @@
 
 .left_section_content h2{
     font-size: 50px;
+    margin-bottom: 15px;
 }
 
 .left_section_content h3{

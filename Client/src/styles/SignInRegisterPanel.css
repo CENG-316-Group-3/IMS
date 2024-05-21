@@ -17,5 +17,5 @@
 
 .signin_register_button:hover{
     cursor: pointer;
-    background-color: var(--dark_purple);
+    background-color: var(--dark_red);
 }

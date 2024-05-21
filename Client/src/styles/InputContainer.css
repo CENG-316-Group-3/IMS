@@ -55,11 +55,11 @@
 
 .input_container_lower_part input::selection{
     color: white;
-    background-color: var(--light_purple);
+    background-color: var(--light_red);
 }
 
 .input_container_lower_part input:focus{
-    outline-color: var(--light_purple);
+    outline-color: var(--light_red);
 }
 
 .input_container_lower_part div{

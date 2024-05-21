@@ -27,7 +27,7 @@ function StudentLoginPage() {
                         <InputContainer id="student_email" label="Student e-mail" type="email" placeholder="Enter your email" icon={profile_icon} state={email} setState={setEmail} />
                         <InputContainer id="student_password" label="Password" type={password_type} placeholder="Enter your password" icon={padlock_icon} state={password} setState={setPassword} optional_icon={(password_hidden) ? password_show : password_hide} optional_text={(password_hidden) ? "Show" : "Hide"} optional_onClick={toggle_password_hide_state}/>
                     </SignInRegisterPanel>
-                    <h3><span>How can I login ?</span></h3>
+                    <h3><a href = "https://ceng.iyte.edu.tr/tr/courses/ceng-400/" target='_blank'><span>How can I login ?</span></a></h3>
                 </div>
             </div>
             <div className="right_section">
