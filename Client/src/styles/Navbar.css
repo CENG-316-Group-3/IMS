@@ -1,0 +1,78 @@
+.navbar{
+    min-width: 200px;
+    margin: 0 30px;
+    background-color: var(--light_blue);
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+}
+
+.navbar_logout_button {
+    border: 1px solid var(--light_red);
+    border-radius: 30px;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+    padding: 5px 10px;
+    transition: background-color 0.3s ease;
+}
+
+.navbar_logout_button_icon{
+    width: 20px;
+    height: 20px;
+    margin-right: 3px;
+    background-image: url(../assets/logout_red.png);
+}
+
+.navbar_logout_button_text{
+    font-size: 13px;
+    font-weight: lighter;
+    color: var(--light_red);
+}
+
+.navbar_logout_button:hover {
+    background-color: var(--light_red);
+    cursor: pointer;
+}
+
+.navbar_logout_button:hover > .navbar_logout_button_text{
+    color: white;
+}
+
+.navbar_logout_button:hover > .navbar_logout_button_icon{
+    background-image: url(../assets/logout_white.png);
+}
+
+.navbar_element{
+    margin: 5px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.navbar_element_icon{
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.navbar_element:hover{
+    cursor: pointer;
+    background-color: var(--light_red);
+}
+
+.navbar_element:hover > .navbar_element_text{
+    color: white;
+}
+
+.navbar_element_text{
+    font-size: 13px;
+    font-weight: bold;
+}

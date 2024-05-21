@@ -1,0 +1,19 @@
+.main_page_div {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.main_page_section{
+    flex-grow: 1;
+    margin-top: 130px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.main_page_content{
+    flex-grow: 1;
+}

@@ -2,16 +2,13 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import StudentLoginPage from './pages/StudentLoginPage';
 import LoginPage from './pages/LoginPage';
-import Header from './pages/Header';
-
-/* temp part*/
-import user_icon from "./assets/user.png"; 
+import MainPage from "./pages/MainPage";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/main" element={< Header username="ünal dalkılıç" profile_icon={user_icon} profile_link=""/>} /> 
+        <Route path="/main" element={< MainPage />} /> 
         <Route path="/" element={<LoginPage />} />
         <Route path="/student-login" element={<StudentLoginPage role="student"/>} />
         <Route path="/coordinator-login" element={<StudentLoginPage role="coordinator"/>} />
