@@ -11,23 +11,23 @@ function CompanyRegister() {
                     <div className='inside_form'>
                         <form>
                             <label id='form-content'>Company E-mail*:</label><br />
-                            <input type="email" id='email' name='email' /><br />
+                            <input type="email" className='company-register-inf' name='email' required /><br />
 
                             <label id='form-content'>Company Name*:</label><br />
-                            <input type="text" id='company-name' name='company-name' /><br />
+                            <input type="text" className='company-register-inf' name='company-name' required /><br />
 
                             <label id='form-content'>Password*:</label><br />
-                            <input type="password" id='password' name='password' /><br />
+                            <input type="password" className='company-register-inf' name='password' required /><br />
 
                             <label id='form-content'>Confirm Password*:</label><br />
-                            <input type="password" id='confirm-password' name='confirm-password' /><br />
+                            <input type="password" className='company-register-inf' name='confirm-password' required /><br />
 
-                            <label id='form-content'>Company Address*:</label><br />
-                            <input type="text" id='address' name='address' /><br />
+                            <label id='form-content'>Company Address:</label><br />
+                            <input type="text" className='company-register-inf' name='address' /><br />
 
                             <button id='register_button' type="submit">Sign Up</button>
                             <div className='already_login'>
-                                <p> Already have an account?</p> <a href="./company-login">Login</a>
+                                <p> Already have an account? <a href="./company-login">Login</a></p>
                             </div>
 
                         </form>
