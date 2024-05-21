@@ -1,0 +1,21 @@
+.signin_register_panel{
+    padding: 30px;
+    background-color: rgba(255,255,255,0.2);
+    border: 1px solid white;
+    border-radius: 30px;
+}
+
+.signin_register_button{
+    width: 100%;
+    background-color: var(--gray);
+    border-radius: 20px;
+    padding: 10px 0;
+    margin-top: 100px;
+    transition: background-color 0.3s ease-in-out;
+    font-size: 18px;
+}
+
+.signin_register_button:hover{
+    cursor: pointer;
+    background-color: var(--dark_red);
+}
