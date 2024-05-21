@@ -29,14 +29,14 @@
     margin-bottom: 50px;
 }
 
-.login_page_button_cover a{
+.login_page_button_cover a {
     display: flex;
     justify-content: center;
     margin: 20px 0;
     text-decoration: none;
 }
 
-.login_page_button_cover hr{
+.login_page_button_cover hr {
     width: 50%;
 }
 
@@ -54,7 +54,7 @@
     transition: background-color 0.3s ease-in-out;
 }
 
-.login_page_button:hover{
+.login_page_button:hover {
     cursor: pointer;
     color: white;
     background-color: var(--dark_red);
