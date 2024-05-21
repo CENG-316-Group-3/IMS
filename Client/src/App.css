@@ -1,0 +1,11 @@
+.background_contain {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.background_cover {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}

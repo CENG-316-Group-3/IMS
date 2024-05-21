@@ -1,0 +1,62 @@
+.header {
+    width: 100%;
+    height: fit-content;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header_left_part {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 30px;
+    margin-right: 50px;
+}
+
+.header_left_part h1{
+    color: var(--mid_red);
+    font-size: 40px;
+    font-weight: 800;
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 0 3px 3px hsla(0, 0%, 0%, 0.8);
+}
+
+.header_logo{
+    width: 80px;
+    height: 80px;
+    background-image: url(../assets/iyte_logo.png);
+}
+
+.header_right_part {
+    width: 100%;
+    height: fit-content;
+    border-bottom: 1px solid black;
+    padding: 20px 0;
+    margin-right: 50px;
+}
+
+.header_account_box{
+    float: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header_account_box h2{
+    font-size: 16px;
+    font-weight: bolder;
+    letter-spacing: 1px;
+}
+
+.header_user_icon {
+    width: 45px;
+    height: 45px;
+    margin-left: 30px;
+    border-radius: 50%;
+}
+
+.header_user_icon:hover{
+    cursor: pointer;
+}
