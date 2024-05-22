@@ -5,6 +5,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
 }
 
 .header_left_part {
@@ -15,7 +16,7 @@
     margin-right: 50px;
 }
 
-.header_left_part h1{
+.header_left_part h1 {
     color: var(--mid_red);
     font-size: 40px;
     font-weight: 800;
@@ -23,7 +24,7 @@
     text-shadow: 0 3px 3px hsla(0, 0%, 0%, 0.8);
 }
 
-.header_logo{
+.header_logo {
     width: 80px;
     height: 80px;
     background-image: url(../assets/iyte_logo.png);
@@ -37,14 +38,14 @@
     margin-right: 50px;
 }
 
-.header_account_box{
+.header_account_box {
     float: right;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.header_account_box h2{
+.header_account_box h2 {
     font-size: 16px;
     font-weight: bolder;
     letter-spacing: 1px;
@@ -57,6 +58,6 @@
     border-radius: 50%;
 }
 
-.header_user_icon:hover{
+.header_user_icon:hover {
     cursor: pointer;
 }
