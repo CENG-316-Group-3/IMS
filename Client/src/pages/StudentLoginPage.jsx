@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useUser } from '../UserContext';
+import { useNavigate } from 'react-router-dom';
 import InputContainer from "../components/InputContainer";
 import "../styles/StudentLoginPage.css";
 import profile_icon from "../assets/user.png";
@@ -8,10 +10,36 @@ import password_show from "../assets/show.png";
 import SignInRegisterPanel from '../components/SignInRegisterPanel';
 
 function StudentLoginPage({ role }) {
+    const { login } = useUser();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [password_hidden, setPasswordHidden] = useState(true);
     const [password_type, setPasswordType] = useState("password");
+    const navigate = useNavigate();
+
+    const handleSignIn = async () => {
+        if (email != "" && password != ""){
+            const response = await fetch(`http://localhost:3000/ims/login/${role}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ [`${role}Mail`]: email, password})
+            }).then(response => {
+                if (response.status == 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok.'); // TODO
+                }
+            }).then(data => {
+                login(data);
+                navigate("/main");
+            }).catch(error => {
+                console.error('There was a problem with your fetch operation:', error); // TODO
+            });;
+        }
+        else{
+            //TODO error
+        }
+    };
 
     const toggle_password_hide_state = () => {
         setPasswordHidden(!password_hidden);
@@ -25,7 +53,7 @@ function StudentLoginPage({ role }) {
             <div className="left_section">
                 <div className="left_section_content">
                     <h2>Sign in</h2>
-                    <SignInRegisterPanel button_text="Sign in" onClick={() => {/* TODO */ }}>
+                    <SignInRegisterPanel button_text="Sign in" onClick={handleSignIn}>
                         <InputContainer id="student_email" label={`${role_text()} e-mail`} type="email" placeholder="Enter your email" icon={profile_icon} state={email} setState={setEmail} />
                         <InputContainer id="student_password" label="Password" type={password_type} placeholder="Enter your password" icon={padlock_icon} state={password} setState={setPassword} optional_icon={(password_hidden) ? password_hide : password_show} optional_text={(password_hidden) ? "Show" : "Hide"} optional_onClick={toggle_password_hide_state} />
                         <p className='forgot_password_text' style={{ display: (role == "company" ? "block" : "none") }}><span>Forgot password ?</span></p>
