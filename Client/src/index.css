@@ -8,6 +8,10 @@
   --dark_red: #3A1414;
   --mid_red: #8C1811;
   --light_blue: #DAE5EF;
+  --success_green: #B7F7C4;
+  --error_red: #FFB7B6;
+  --alert_yellow: #FBE7C6;
+  --info_blue: #B3E6F5;
 }
 
 body {

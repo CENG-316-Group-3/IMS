@@ -1,0 +1,37 @@
+.popup_div{
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 999;
+    max-width: 500px;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.popup_div_icon{
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.popup_div_content{
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    margin-left: 30px;
+}
+
+.popup_div_content h3{
+    margin: 0;
+}
+
+.popup_div_content p{
+    margin: 0;
+    font-size: 15px;
+}
