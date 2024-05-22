@@ -5,8 +5,10 @@ import { main_page_config } from "../config";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import NewAnnouncement from "../components/NewAnnouncement";
 
 import user_icon from "../assets/user.png";
+import Announcements from "../components/Announcements";
 
 function MainPage() {
     const [content, setContent] = useState(null);
@@ -19,7 +21,8 @@ function MainPage() {
             <div className="main_page_section">
                 <Navbar navbar_items={main_page_config.company.navbar_items} />
                 <div className="main_page_content">
-                    {DynamicComponent ? <DynamicComponent /> : null}
+                    // {DynamicComponent ? <DynamicComponent /> : null}
+                    <NewAnnouncement />
                 </div>
             </div>
             <Footer />
