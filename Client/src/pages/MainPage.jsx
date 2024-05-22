@@ -22,14 +22,22 @@ function MainPage() {
     return (
         <div className="main_page_div">
             <Header username="ünal dalkılıç" profile_icon={user_icon} profile_link="" />
-            <Navbar navbar_items={[
-                { icon: document_red, hover_icon: document_white, text: "Documents" },
-                { icon: megaphone_red, hover_icon: megaphone_white, text: "Announcements" },
-                { icon: app_form_red, hover_icon: app_form_white, text: "Applications" },
-                { icon: new_app_form_red, hover_icon: new_app_form_white, text: "New Application" },
-                { icon: briefcase_red, hover_icon: briefcase_white, text: "Opportunities" },
-                // Add others
-            ]} />
+            <div className="main_page_section">
+
+                <Navbar navbar_items={[
+                    { icon: document_red, hover_icon: document_white, text: "Documents" },
+                    { icon: megaphone_red, hover_icon: megaphone_white, text: "Announcements" },
+                    { icon: app_form_red, hover_icon: app_form_white, text: "Applications" },
+                    { icon: new_app_form_red, hover_icon: new_app_form_white, text: "New Application" },
+                    { icon: briefcase_red, hover_icon: briefcase_white, text: "Opportunities" },
+                    // Add others
+                ]} />
+
+                <div className="main_page_content">
+
+                </div>
+            </div>
+
             <Footer />
         </div>
     )
