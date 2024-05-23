@@ -21,7 +21,9 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
         channel = ch;
         const exchange = 'direct_logs';
         const queueName = 'applicationQueue1';
-        const routingKeys = ['application letter created', 'application form created','/student/applyToInternship','/student/sendApplicationForm','/company/acceptApplicationLetter'];
+        const routingKeys = ['application letter created', 'application form created','/student/applyToInternship','/student/sendApplicationForm','/company/acceptApplicationLetter', 
+        '/company/rejectApplicationLetter', '/company/rejectApplicationForm', '/summerPractiseCoordinator/rejectApplicationForm','/company/acceptApplicationForm', '/summerPractiseCoordinator/acceptApplicationForm'
+        ];
         // Declare the Direct Exchange
         channel.assertExchange(exchange, 'direct', { durable: false });
         channel.assertQueue(queueName, { exclusive: true }, function(error2, q) {
@@ -50,6 +52,16 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
                     processStudentSendApplicationForm(message.content.toString());
                 } else if (message.fields.routingKey === '/company/acceptApplicationLetter'){
                     processCompanyAcceptApplicationLetter(message.content.toString());
+                } else if (message.fields.routingKey === '/company/rejectApplicationLetter'){
+                    processCompanyRejectApplicationLetter(message.content.toString());
+                }else if  (message.fields.routingKey === '/company/rejectApplicationForm'){
+                    processCompanyRejectApplicationForm(message.content.toString());
+                }else if (message.fields.routingKey === '/summerPractiseCoordinator/rejectApplicationForm'){
+                    processSummerPractiseCoordinatorRejectApplicationForm(message.content.toString());
+                }else if (message.fields.routingKey === '/company/acceptApplicationForm'){
+                    processCompanyAcceptApplicationForm(message.content.toString());
+                }else if (message.fields.routingKey === '/summerPractiseCoordinator/acceptApplicationForm'){
+                    processSummerPractiseCoordinatorAcceptApplicationForm(message.content.toString());
                 }
             }, { noAck: true });
         });
@@ -129,7 +141,7 @@ async function processStudentApplyToInternship(message){
             status: "application is started",
             content: ""
         });
-        emitMessage('application letter', JSON.stringify(content));
+        emitMessage('application letter create', JSON.stringify(content));
         emitMessage('success', JSON.stringify({ message: 'Application Letter is Sent' }));
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
@@ -169,7 +181,7 @@ async function processStudentSendApplicationForm(message){
     const content = JSON.parse(message);
     try{
         await updateApplicationStatus(content.studentMail, content.announcementId, content.companyMail, 'application form is processing', "", 'application letter is accepted');
-        emitMessage('application form', JSON.stringify(content));
+        emitMessage('application form create', JSON.stringify(content));
         emitMessage('success', JSON.stringify({ message: 'Application Form is Sent' }));
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
@@ -201,6 +213,7 @@ async function processCompanyAcceptApplicationLetter(message){
         emitMessage('error', JSON.stringify({ message: 'Error accepting Applicaton Letter ' }));
     }
 }
+/*
 app.put('/company/acceptApplicationLetter', async(req, res) => {
     const { studentMail, announcementId, companyMail, content} = req.body;
     try {
@@ -210,7 +223,18 @@ app.put('/company/acceptApplicationLetter', async(req, res) => {
         res.status(500).send('Error updating application status');
     }
 });
+*/
 
+async function processCompanyRejectApplicationLetter(message){
+    const { studentMail, announcementId, companyMail, content} = JSON.parse(message);
+    try {
+        await updateApplicationStatus(studentMail, announcementId, companyMail, 'application letter is rejected', content, 'application letter created');
+        emitMessage('success', JSON.stringify({ message: 'application letter is rejected' }));
+    } catch (error) {   
+        emitMessage('error', JSON.stringify({ message: 'Error updating application status' }));
+    }
+}
+/*
 app.put('/company/rejectApplicationLetter', async(req, res) => {
     const { studentMail, announcementId, companyMail, content} = req.body;
     try {
@@ -220,7 +244,17 @@ app.put('/company/rejectApplicationLetter', async(req, res) => {
         res.status(500).send('Error updating application status');
     }
 });
-
+*/
+async function processCompanyRejectApplicationForm(message){
+    const { studentMail, announcementId, companyMail, content} = JSON.parse(message);
+    try {
+        await updateApplicationStatus(studentMail, announcementId, companyMail, 'application form is rejected by company', content, 'application form is created');
+        emitMessage('success', JSON.stringify({ message: 'application form is rejected by company' }));
+    } catch (error) {
+        emitMessage('error', JSON.stringify({ message: 'Error updating application status' }));
+    }
+}
+/*
 app.put('/company/rejectApplicationForm', async(req, res) => {
     const { studentMail, announcementId, companyMail, content} = req.body;
     try {
@@ -230,7 +264,19 @@ app.put('/company/rejectApplicationForm', async(req, res) => {
         res.status(500).send('Error updating application status');
     }
 });
+*/
 
+async function processSummerPractiseCoordinatorRejectApplicationForm(message){
+    const { studentMail, announcementId, companyMail, content} = JSON.parse(message);
+    try {
+        await updateApplicationStatus(studentMail, announcementId, companyMail, 'application form is rejected by summer practise coordinator', content, 'application form is accepted by company');
+        emitMessage('success', JSON.stringify({ message: 'application form rejected by summer practise coordinator' }));
+    } catch (error) {
+        emitMessage('error', JSON.stringify({ message: 'Error updating application status' }));
+    }
+}
+
+/*
 app.put('/summerPractiseCoordinator/rejectApplicationForm', async(req, res) => {
     const { studentMail, announcementId, companyMail, content} = req.body;
     try {
@@ -240,21 +286,19 @@ app.put('/summerPractiseCoordinator/rejectApplicationForm', async(req, res) => {
         res.status(500).send('Error updating application status');
     }
 });
-
-
-
-
-app.put('/company/acceptApplicationLetter', async(req, res) => {
-    const { studentMail, announcementId, companyMail, content} = req.body;
+*/
+async function processCompanyAcceptApplicationForm(message){
+    const content = JSON.parse(message);
     try {
-        await updateApplicationStatus(studentMail, announcementId, companyMail, 'application letter is accepted', "", 'application letter created');
-        res.send('application letter is accepted');
+        emitMessage('application form accept', JSON.stringify(content));
+        await updateApplicationStatus(content.studentMail, content.announcementId, content.companyMail, 'application form is accepted by company', '', 'application form is created');
+        emitMessage('success', JSON.stringify({ message: 'Application form is processing' }));
     } catch (error) {
-        res.status(500).send('Error updating application status');
+        emitMessage('error', JSON.stringify({ message: 'Error updating application status' }));
     }
-});
+}
 
-
+/*
 
 app.put('/company/acceptApplicationForm', async (req, res) => {
     const content = req.body;
@@ -266,8 +310,18 @@ app.put('/company/acceptApplicationForm', async (req, res) => {
         res.status(500).send('Error updating application status');
     }
 });
+*/
 
-
+async function processSummerPractiseCoordinatorAcceptApplicationForm(message){
+    const { studentMail, announcementId, companyMail, content} = JSON.parse(message);
+    try {
+        await updateApplicationStatus(studentMail, announcementId, companyMail, 'application form is accepted by summer practise coordinator', content, 'application form is accepted by company');
+        emitMessage('success', JSON.stringify({ message: 'application form is accepted by summerPractiseCoordinator' }));
+    } catch (error) {
+        emitMessage('error', JSON.stringify({ message: 'Error updating application status' }));
+    }
+}
+/*
 app.put('/summerPractiseCoordinator/acceptApplicationForm', async(req, res) => {
     const { studentMail, announcementId, companyMail, content} = req.body;
     try {
@@ -277,8 +331,7 @@ app.put('/summerPractiseCoordinator/acceptApplicationForm', async(req, res) => {
         res.status(500).send('Error updating application status');
     }
 });
-
-
+*/
 
 
 app.listen(4000, () => {

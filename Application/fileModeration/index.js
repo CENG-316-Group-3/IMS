@@ -33,7 +33,9 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
         // Declare exchange and queue here
         const exchange = 'direct_logs';
         const queueName = 'applicationQueue';
-        const routingKeys = ['application letter', 'application form', 'application form accept'];
+        const routingKeys = ['application letter create', 'application form create', 'application form accept'
+            ,'/applicationLetter'
+        ];
         
         channel.assertExchange(exchange, 'direct', { durable: false });
         channel.assertQueue(queueName, { exclusive: true }, function(error2, q) {
@@ -58,6 +60,8 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
                     processApplicationForm(message.content.toString());
                 }else if (message.fields.routingKey === 'application form accept'){
                     processApplicationFormAccept(message.content.toString());
+                }else if (message.fields.routingKey === '/applicationLetter'){
+                    processGetApplicationLetter(message.content.toString())
                 }
             }, { noAck: true });
         });
@@ -217,9 +221,48 @@ app.post('/pushStudent', async(req, res) => {
         }
     }
 });
+
+async function processGetApplicationLetter(message){
+    try {
+        // Extract query parameters from the request
+        const { companyMail, announcementId, studentMail } = JSON.parse(message);;
+
+        // Validate that all required query parameters are provided
+        if (!companyMail || !announcementId || !studentMail) {
+            emitMessage('error', JSON.stringify({ message: 'Missing required query parameters' }));
+        }
+
+        // Find the application letter and include the related student information
+        const applicationLetter = await ApplicationLetter.findOne({
+            where: {
+                companyMail,
+                announcementId,
+                studentMail
+            },
+            include: [{
+                model: Students,
+                attributes: ['studentNumber', 'firstName', 'lastName', 'gradeNumber', 'faculty', 'department', 'NationalIdentityNumber', 'Telephone']
+            }]
+        });
+
+        // Check if the application letter was found
+        if (!applicationLetter) {
+            emitMessage('error', JSON.stringify({ message:  'Application letter not found' }));
+        }
+        // Return the application letter and student information as a JSON response
+        emitMessage('success', applicationLetter);
+    } catch (error) {
+        console.error('Error retrieving application letter:', error);
+        // Return a 500 Internal Server Error response in case of an error
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
 app.get('/applicationLetter', async (req, res) => {
     try {
         // Extract query parameters from the request
+        
         const { companyMail, announcementId, studentMail } = req.query;
 
         // Validate that all required query parameters are provided

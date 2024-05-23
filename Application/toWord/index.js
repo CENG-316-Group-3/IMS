@@ -56,7 +56,7 @@ function emitMessage(routingKey, message) {
 }
 
 
-app.post('/student/applyToInternship', async(req, res) => { 
+app.post('/student/applyToInternship', async(req, res) => { // to send application letter
     const content = req.body;
     const msg = JSON.stringify(content);
     emitMessage('/student/applyToInternship', msg);
@@ -66,7 +66,7 @@ app.post('/student/applyToInternship', async(req, res) => {
 app.post('/student/sendApplicationForm', async(req, res) => { 
     const content = req.body;
     const msg = JSON.stringify(content);
-    emitMessage('/student/applyToInternship', msg);
+    emitMessage('/student/sendApplicationForm', msg);
     res.send('Application form is created');
 });
 
@@ -76,6 +76,52 @@ app.put('/company/acceptApplicationLetter', async(req, res) => {
     emitMessage('/company/acceptApplicationLetter', msg);
     res.send('Application letter is accepted by company');
 });
+
+app.put('/company/rejectApplicationLetter', async(req, res) => { 
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    emitMessage('/company/rejectApplicationLetter', msg);
+    res.send('Application letter is rejected by company');
+});
+
+app.put('/company/rejectApplicationForm', async(req, res) => { 
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    emitMessage('/company/rejectApplicationForm', msg);
+    res.send('Application form is rejected by company');
+});
+
+
+app.put('/summerPractiseCoordinator/rejectApplicationForm', async(req, res) => { 
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    emitMessage('/summerPractiseCoordinator/rejectApplicationForm', msg);
+    res.send('Application form is rejected by summer practise coordinator');
+});
+
+app.put('/company/acceptApplicationForm', async(req, res) => { 
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    emitMessage('/company/acceptApplicationForm', msg);
+    res.send('Application form is accepted by company');
+});
+
+
+app.put('/summerPractiseCoordinator/acceptApplicationForm', async(req, res) => { 
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    emitMessage('/summerPractiseCoordinator/acceptApplicationForm', msg);
+    res.send('Application form is accepted by summer Practise Coordinator');
+});
+
+app.get('/applicationLetter', async(req, res) => {
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    emitMessage('/applicationLetter', msg);
+} )
+
+
+
 
 
 
