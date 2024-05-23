@@ -3,6 +3,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import NewAnnouncement from "../components/NewAnnouncement";
+import Announcements from "../components/Announcements";
+import Popup from "../components/Popup";
 
 // Icons //
 import document_red from "../assets/document_red.png";
@@ -19,7 +21,7 @@ import briefcase_white from "../assets/briefcase_white.png";
 
 /* TEMP PART */
 import user_icon from "../assets/user.png";
-import Announcements from "../components/Announcements";
+
 
 function MainPage() {
     return (
@@ -37,8 +39,9 @@ function MainPage() {
                 ]} />
 
                 <div className="main_page_content">
-                    <NewAnnouncement />
+                    {/* <NewAnnouncement /> */}
                     {/* <Announcements /> */}
+                    {/* <Popup type="info" message="This is a success message." /> */}
                 </div>
             </div>
 
