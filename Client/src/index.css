@@ -1,0 +1,21 @@
+:root {
+  --stone: #FEFEFE;
+  --light_purple: #4F3FB1;
+  --dark_purple: #211B4B;
+  --gray: #C2C2C2;
+  --light_blue: #DAE5EF;
+  --light_red: #B91228;
+  --dark_red: #3A1414;
+  --mid_red: #8C1811;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins';
+  background-color: var(--stone);
+}
+
+a{
+  text-decoration: none;
+  color: white;
+}

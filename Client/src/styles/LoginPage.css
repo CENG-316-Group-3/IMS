@@ -1,0 +1,61 @@
+.page_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+.page_content {
+    text-align: center;
+    background: linear-gradient(to bottom, var(--light_red), var(--dark_red));
+    border-radius: 10px;
+    color: white;
+    padding: 50px 80px;
+}
+
+.logo {
+    background-image: url(../assets/iyte_logo.png);
+    width: 130px;
+    height: 130px;
+    display: inline-block;
+}
+
+.page_content h2 {
+    font-size: 15px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+.login_page_button_cover a {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    text-decoration: none;
+}
+
+.login_page_button_cover hr {
+    width: 50%;
+}
+
+.login_page_button {
+    color: black;
+    background-color: white;
+    display: inline-block;
+    padding: 5px 50px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 15px;
+    width: 40%;
+    max-width: 200px;
+    text-align: center;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.login_page_button:hover {
+    cursor: pointer;
+    color: white;
+    background-color: var(--dark_red);
+}
