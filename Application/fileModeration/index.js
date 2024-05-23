@@ -34,7 +34,7 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
         const exchange = 'direct_logs';
         const queueName = 'applicationQueue';
         const routingKeys = ['application letter create', 'application form create', 'application form accept'
-            ,'/applicationLetter'
+            ,'/applicationLetter', '/applicationForm'
         ];
         
         channel.assertExchange(exchange, 'direct', { durable: false });
@@ -53,16 +53,17 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
                 console.log(`[x] Received message with routing key ${message.fields.routingKey}: '${message.content.toString()}'`);
                 
                 // Determine which process function to call based on the routing key
-                if (message.fields.routingKey === 'application letter') {
+                if (message.fields.routingKey === 'application letter create') {
                     processApplicationLetter(message.content.toString());
 
-                } else if (message.fields.routingKey === 'application form') {
+                } else if (message.fields.routingKey === 'application form create') {
                     processApplicationForm(message.content.toString());
                 }else if (message.fields.routingKey === 'application form accept'){
                     processApplicationFormAccept(message.content.toString());
                 }else if (message.fields.routingKey === '/applicationLetter'){
-                    processGetApplicationLetter(message.content.toString())
-                }
+                    processGetApplicationLetter(message);
+                }else if (message.fields.routingKey === '/applicationForm') {
+                    processGetApplicationForm(message)}
             }, { noAck: true });
         });
     });
@@ -225,7 +226,8 @@ app.post('/pushStudent', async(req, res) => {
 async function processGetApplicationLetter(message){
     try {
         // Extract query parameters from the request
-        const { companyMail, announcementId, studentMail } = JSON.parse(message);;
+        msg = message.content.toString()
+        const { companyMail, announcementId, studentMail } = JSON.parse(msg);;
 
         // Validate that all required query parameters are provided
         if (!companyMail || !announcementId || !studentMail) {
@@ -250,14 +252,27 @@ async function processGetApplicationLetter(message){
             emitMessage('error', JSON.stringify({ message:  'Application letter not found' }));
         }
         // Return the application letter and student information as a JSON response
-        emitMessage('success', applicationLetter);
+
+        console.log("\n", applicationLetter.toJSON());
+        console.log( message.properties.correlationId);
+        emitMessageCorrelationId('success', applicationLetter, message.properties.correlationId);
     } catch (error) {
         console.error('Error retrieving application letter:', error);
         // Return a 500 Internal Server Error response in case of an error
-        res.status(500).json({ error: 'Internal server error' });
+        emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
     }
 }
 
+async function emitMessageCorrelationId(routingKey, message, correlationId) {
+    const exchange = 'direct_logs';    
+    channel.publish(exchange, routingKey, Buffer.from(msg),{
+        correlationId: correlationId
+    });
+    console.log(`[x] Sent message with routing key ${routingKey}: '${message}'`);
+}
+
+
+/*
 
 app.get('/applicationLetter', async (req, res) => {
     try {
@@ -295,8 +310,49 @@ app.get('/applicationLetter', async (req, res) => {
         // Return a 500 Internal Server Error response in case of an error
         res.status(500).json({ error: 'Internal server error' });
     }
-});
+});*/
 
+
+async function processGetApplicationForm(message){
+    try {
+        // Extract query parameters from the request
+        msg = message.content.toString()
+        const { companyMail, announcementId, studentMail } = JSON.parse(msg);;
+
+        // Validate that all required query parameters are provided
+        if (!companyMail || !announcementId || !studentMail) {
+            emitMessage('error', JSON.stringify({ message: 'Missing required query parameters' }));
+        }
+
+        // Find the application letter and include the related student information
+        const applicationForm = await ApplicationForm.findOne({
+            where: {
+                companyMail,
+                announcementId,
+                studentMail
+            },
+            include: [{
+                model: Students,
+                attributes: ['studentNumber', 'firstName', 'lastName', 'gradeNumber', 'faculty', 'department', 'NationalIdentityNumber', 'Telephone']
+            }]
+        });
+
+        // Check if the application letter was found
+        if (!applicationForm) {
+            emitMessage('error', JSON.stringify({ message:  'Application letter not found' }));
+        }
+        // Return the application letter and student information as a JSON response
+
+        console.log("\n", applicationForm.toJSON());
+        console.log( message.properties.correlationId);
+        emitMessageCorrelationId('success', applicationForm, message.properties.correlationId);
+    } catch (error) {
+        console.error('Error retrieving application letter:', error);
+        // Return a 500 Internal Server Error response in case of an error
+        emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
+    }
+}
+/*
 app.get('/applicationForm', async (req, res) => {
     try {
         // Extract query parameters from the request
@@ -332,7 +388,7 @@ app.get('/applicationForm', async (req, res) => {
         // Return a 500 Internal Server Error response in case of an error
         res.status(500).json({ error: 'Internal server error' });
     }
-});
+});*/
 
 
 
