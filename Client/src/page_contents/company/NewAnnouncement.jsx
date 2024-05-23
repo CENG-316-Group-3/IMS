@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/NewAnnouncement.css';
+import '../../styles/NewAnnouncement.css';
 
 const NewAnnouncement = () => {
     const [file, setFile] = useState(null);

@@ -12,6 +12,9 @@
   --error_red: #FFB7B6;
   --alert_yellow: #FBE7C6;
   --info_blue: #B3E6F5;
+  --light_green: #38AF48;
+  --dark_green: #268926;
+  --dark_gray: #898686;
 }
 
 body {
@@ -20,7 +23,7 @@ body {
   background-color: var(--stone);
 }
 
-a{
+a {
   text-decoration: none;
   color: white;
 }
