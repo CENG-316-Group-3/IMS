@@ -43,6 +43,7 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
 
             // Set up a single consumer to handle responses
             channel.consume(q.queue, (msg) => {
+                console.log(`[x] Received message with routing key ${msg.fields.routingKey}: '${msg.content.toString()}'`);
                 const correlationId = msg.properties.correlationId;
                 const content = msg.content.toString();
                 if (msg.fields.routingKey === 'error') {
@@ -80,54 +81,76 @@ function waitForResponse(correlationId) {
 app.post('/student/applyToInternship', async(req, res) => { // to send application letter
     const content = req.body;
     const msg = JSON.stringify(content);
+    const correlationId = generateUuid();
     emitMessageCorrelationId('/student/applyToInternship', msg, correlationId);
     const response = await waitForResponse(correlationId);
     res.send(response);
-    emitMessage('/student/applyToInternship', msg);
-    res.send('Application letter is created');
+  
+   
 });
 
 app.post('/student/sendApplicationForm', async(req, res) => { 
     const content = req.body;
     const msg = JSON.stringify(content);
-    emitMessage('/student/sendApplicationForm', msg);
-    res.send('Application form is created');
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/student/sendApplicationForm', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    res.send(response);
 });
 
 app.put('/company/acceptApplicationLetter', async(req, res) => { 
     const content = req.body;
     const msg = JSON.stringify(content);
-    emitMessage('/company/acceptApplicationLetter', msg);
-    res.send('Application letter is accepted by company');
+    //emitMessage('/company/acceptApplicationLetter', msg);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/company/acceptApplicationLetter', msg, correlationId);
+    //res.send('Application letter is accepted by company');
+    const response = await waitForResponse(correlationId);
+    res.send(response);
 });
 
 app.put('/company/rejectApplicationLetter', async(req, res) => { 
     const content = req.body;
     const msg = JSON.stringify(content);
-    emitMessage('/company/rejectApplicationLetter', msg);
-    res.send('Application letter is rejected by company');
+    //emitMessage('/company/rejectApplicationLetter', msg);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/company/rejectApplicationLetter', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    res.send(response);
 });
 
 app.put('/company/rejectApplicationForm', async(req, res) => { 
     const content = req.body;
     const msg = JSON.stringify(content);
-    emitMessage('/company/rejectApplicationForm', msg);
-    res.send('Application form is rejected by company');
+    const correlationId = generateUuid();
+    //emitMessage('/company/rejectApplicationForm', msg);
+    emitMessageCorrelationId('/company/rejectApplicationForm', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    res.send(response);
+    //res.send('Application form is rejected by company');
 });
 
 
 app.put('/summerPractiseCoordinator/rejectApplicationForm', async(req, res) => { 
     const content = req.body;
     const msg = JSON.stringify(content);
-    emitMessage('/summerPractiseCoordinator/rejectApplicationForm', msg);
-    res.send('Application form is rejected by summer practise coordinator');
+    const correlationId = generateUuid();
+    //emitMessage('/summerPractiseCoordinator/rejectApplicationForm', msg);
+    emitMessageCorrelationId('/summerPractiseCoordinator/rejectApplicationForm', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    res.send(response);
+    //res.send('Application form is rejected by summer practise coordinator');
 });
 
 app.put('/company/acceptApplicationForm', async(req, res) => { 
     const content = req.body;
     const msg = JSON.stringify(content);
-    emitMessage('/company/acceptApplicationForm', msg);
-    res.send('Application form is accepted by company');
+    const correlationId = generateUuid();
+    //emitMessage('/company/acceptApplicationForm', msg);
+    emitMessageCorrelationId('/company/acceptApplicationForm', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    res.send(response);
+    //res.send('Application form is accepted by company');
 });
 
 
@@ -146,7 +169,6 @@ app.get('/applicationLetter', async (req, res) => {
     const content = req.query;
     const msg = JSON.stringify(content);
     const correlationId = generateUuid();
-
     emitMessageCorrelationId('/applicationLetter', msg, correlationId);
     const response = await waitForResponse(correlationId);
     res.send(response);
@@ -156,7 +178,6 @@ app.get('/applicationForm', async (req, res) => {
     const content = req.query;
     const msg = JSON.stringify(content);
     const correlationId = generateUuid();
-    
     emitMessageCorrelationId('/applicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
     res.send(response);

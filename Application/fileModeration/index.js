@@ -54,12 +54,12 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
                 
                 // Determine which process function to call based on the routing key
                 if (message.fields.routingKey === 'application letter create') {
-                    processApplicationLetter(message.content.toString());
+                    processApplicationLetter(message);
 
                 } else if (message.fields.routingKey === 'application form create') {
-                    processApplicationForm(message.content.toString());
-                }else if (message.fields.routingKey === 'application form accept'){
-                    processApplicationFormAccept(message.content.toString());
+                    processApplicationForm(message);
+                }else if (message.fields.routingKey === 'application form accept'){//by company
+                    processApplicationFormAccept(message);
                 }else if (message.fields.routingKey === '/applicationLetter'){
                     processGetApplicationLetter(message);
                 }else if (message.fields.routingKey === '/applicationForm') {
@@ -69,9 +69,13 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
     });
 });
 
+
+// Function to wait for a response
+
+
 async function processApplicationLetter(message) {
     try {
-        const content = JSON.parse(message);
+        const content = JSON.parse(message.content.toString());
         const studentMail = content.studentMail;
 
         // Fetch the student details from the Students table
@@ -93,16 +97,13 @@ async function processApplicationLetter(message) {
 
         console.log('Application letter added to the database');
         
-        // Emit message to notify other server
-        const notificationMessage = JSON.stringify({
-            studentMail,
-            announcementId: content.announcementId,
-            companyMail: content.companyMail
-        });
-        emitMessage('application letter created', notificationMessage);
+    
+        emitMessageCorrelationId('application letter created',  JSON.stringify({ message: 'application letter created' }),  message.properties.correlationId);
+        //emitMessage('application letter created', notificationMessage);
         
         
     } catch (error) {
+        emitMessageCorrelationId('application letter created',  JSON.stringify({ message: 'application letter not created' }),  message.properties.correlationId);
         console.error('Error processing application letter:', error);
     }
 };
@@ -110,7 +111,7 @@ async function processApplicationLetter(message) {
 
 async function processApplicationFormAccept(message) {
     try {
-        const content = JSON.parse(message);
+        const content = JSON.parse(message.content.toString());
         const { studentMail, announcementId, companyMail } = content;
 
         // Fetch the existing ApplicationForm entry
@@ -140,23 +141,17 @@ async function processApplicationFormAccept(message) {
             wantToHaveInsurance: content.wantToHaveInsurance
         });
 
-        console.log('Application form updated successfully');
-
-        // Emit message to notify other server
-        const notificationMessage = JSON.stringify({
-            studentMail,
-            announcementId,
-            companyMail
-        });
-        emitMessage('application form accepted', notificationMessage);
+        console.log('Application form updated successfully');       
+        emitMessageCorrelationId('application form accepted',  JSON.stringify({ message: 'application form accepted'}),  message.properties.correlationId);
     } catch (error) {
+        emitMessageCorrelationId('application form accepted',  JSON.stringify({ message: 'application form not accepted' }),  message.properties.correlationId);
         console.error('Error processing application form accept:', error);
     }
 }
 
 async function processApplicationForm(message) {
     try {
-        const content = JSON.parse(message);
+        const content = JSON.parse(message.content.toString());
         const studentMail = content.studentMail;
 
         // Fetch the student details from the Students table
@@ -186,13 +181,12 @@ async function processApplicationForm(message) {
         console.log('Application form added to the database');
 
         // Emit message to notify other server
-        const notificationMessage = JSON.stringify({
-            studentMail,
-            announcementId: content.announcementId,
-            companyMail: content.companyMail
-        });
-        emitMessage('application form created', notificationMessage);
+     
+        
+        emitMessageCorrelationId('application form created',  JSON.stringify({ message: 'application form created' }),  message.properties.correlationId);
+        //emitMessage('application form created', notificationMessage);
     } catch (error) {
+        emitMessageCorrelationId('application form created',  JSON.stringify({ message: 'application form not created' }),  message.properties.correlationId);
         console.error('Error processing application form:', error);
     }
 }
@@ -259,7 +253,8 @@ async function processGetApplicationLetter(message){
     } catch (error) {
         console.error('Error retrieving application letter:', error);
         // Return a 500 Internal Server Error response in case of an error
-        emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
+        emitMessageCorrelationId('success','application letter found not found', message.properties.correlationId);
+        //emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
     }
 }
 
@@ -270,6 +265,14 @@ async function emitMessageCorrelationId(routingKey, message, correlationId) {
         correlationId: correlationId
     });
     console.log(`[x] Sent message with routing key ${routingKey}: '${message}'`);
+}
+
+function waitForResponse(correlationId) {
+    return new Promise((resolve) => {
+        responseHandlers[correlationId] = (content) => {
+            resolve(content);
+        };
+    });
 }
 
 
@@ -350,7 +353,8 @@ async function processGetApplicationForm(message){
     } catch (error) {
         console.error('Error retrieving application letter:', error);
         // Return a 500 Internal Server Error response in case of an error
-        emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
+        emitMessageCorrelationId('success','application form found not found', message.properties.correlationId);
+        //emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
     }
 }
 /*
