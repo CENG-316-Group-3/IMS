@@ -1,7 +1,6 @@
-import React from "react";
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import SigninPage from './pages/SigninPage';
+import StudentLoginPage from './pages/StudentLoginPage';
 import LoginPage from './pages/LoginPage';
 import MainPage from "./pages/MainPage";
 import CompanyRegister from './pages/CompanyRegister';
@@ -13,10 +12,9 @@ import ProtectedRoute from "./modules/ProtectedRoute";
 function App() {
   const { user } = useUser();
   const { showPopup } = usePopup();
-   
+
   return (
     <Router>
-      <Popup />
       <Routes>
           <Route path="/main" element={<ProtectedRoute protected_route={"/"} condition_handler={() => (!user)} optional_conditional_handler_operation={() => {showPopup("alert", "You need to sign in first !")}}>< MainPage /></ProtectedRoute>} /> 
           <Route path="/" element={<ProtectedRoute protected_route={"/main"} condition_handler={() => (user)} optional_conditional_handler_operation={() => {showPopup("info", "You have already signed in")}}><LoginPage /></ProtectedRoute>} />

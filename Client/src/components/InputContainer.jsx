@@ -1,4 +1,3 @@
-import React from 'react';
 import "../styles/InputContainer.css";
 
 function InputContainer({ id, label, type, placeholder, icon, optional_icon, optional_text, state, setState, optional_onClick }){
