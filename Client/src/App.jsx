@@ -4,18 +4,25 @@ import StudentLoginPage from './pages/StudentLoginPage';
 import LoginPage from './pages/LoginPage';
 import MainPage from "./pages/MainPage";
 import CompanyRegister from './pages/CompanyRegister';
+import Popup from "./components/Popup";
+import { useUser } from "./contexts/UserContext";
+import { usePopup } from './contexts/PopUpContext';
+import ProtectedRoute from "./modules/ProtectedRoute";
 
 function App() {
+  const { user } = useUser();
+  const { showPopup } = usePopup();
+
   return (
     <Router>
       <Routes>
-        <Route path="/main" element={< MainPage />} /> 
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/student-login" element={<StudentLoginPage role="student" />} />
-        <Route path="/coordinator-login" element={<StudentLoginPage role="coordinator" />} />
-        <Route path="/company-login" element={<StudentLoginPage role="company" />} />
-        <Route path="/secretariat-login" element={<StudentLoginPage role="secretariat" />} />
-        <Route path="/company-register" element={<CompanyRegister />} />
+          <Route path="/main" element={<ProtectedRoute protected_route={"/"} condition_handler={() => (!user)} optional_conditional_handler_operation={() => {showPopup("alert", "You need to sign in first !")}}>< MainPage /></ProtectedRoute>} /> 
+          <Route path="/" element={<ProtectedRoute protected_route={"/main"} condition_handler={() => (user)} optional_conditional_handler_operation={() => {showPopup("info", "You have already signed in")}}><LoginPage /></ProtectedRoute>} />
+          <Route path="/student-login" element={<ProtectedRoute protected_route={"/main"} condition_handler={() => (user)} optional_conditional_handler_operation={() => {showPopup("info", "You have already signed in")}}><SigninPage role="student" /></ProtectedRoute>} />
+          <Route path="/coordinator-login" element={<ProtectedRoute protected_route={"/main"} condition_handler={() => (user)} optional_conditional_handler_operation={() => {showPopup("info", "You have already signed in")}}><SigninPage role="coordinator" /></ProtectedRoute>} />
+          <Route path="/company-login" element={<ProtectedRoute protected_route={"/main"} condition_handler={() => (user)} optional_conditional_handler_operation={() => {showPopup("info", "You have already signed in")}}><SigninPage role="company" /></ProtectedRoute>} />
+          <Route path="/secretariat-login" element={<ProtectedRoute protected_route={"/main"} condition_handler={() => (user)} optional_conditional_handler_operation={() => {showPopup("info", "You have already signed in")}}><SigninPage role="secretariat" /></ProtectedRoute>} />
+          <Route path="/company-register" element={<ProtectedRoute protected_route={"/main"} condition_handler={() => (user)} optional_conditional_handler_operation={() => {showPopup("info", "You have already signed in")}}><CompanyRegister /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

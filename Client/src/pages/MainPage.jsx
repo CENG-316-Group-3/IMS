@@ -29,6 +29,11 @@ import Opportunities from "../page_contents/student/Opportunities";
 
 
 function MainPage() {
+    const { showPopup } = usePopup();
+    const [content, setContent] = useState(null);
+    // let DynamicComponent = (content != null) ? main_page_config.company.page_content[content] : null;
+    const { user } = useUser();
+    const navigate = useNavigate();
     return (
         <div className="main_page_div">
             <Header username="ünal dalkılıç" profile_icon={user_icon} profile_link="" />

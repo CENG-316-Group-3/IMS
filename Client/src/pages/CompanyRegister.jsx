@@ -2,7 +2,33 @@ import React from 'react'
 import "../styles/CompanyRegister.css";
 
 function CompanyRegister() {
+    const {user} = useUser();
+    const { showPopup } = usePopup();
+    const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirm_password, setConfirmPassword] = useState("");
+    const [address, setAddress] = useState("");
 
+    const handle_register = async (event) => {
+        event.preventDefault()
+        if (email == ""){
+            showPopup("error", "Please enter an email !");
+            return -1;
+        }
+        else if (name == "")
+            showPopup("error", "Please enter a name !");
+        else if (password == "")
+            showPopup("error", "Please enter a password !");
+        else if (password.length < 8)
+            showPopup("error", "Password needs to be at least 8 characters !");
+        else if (confirm_password == "")
+            showPopup("error", "Please confirm password !");
+        else if (password !== confirm_password)
+            showPopup("error", "Passwords did not match !");
+        // TODO gateway
+    };
     return (
         <div className='register_div'>
             <div className='register_page_content'>
