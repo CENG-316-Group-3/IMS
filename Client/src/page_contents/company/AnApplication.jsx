@@ -9,7 +9,7 @@ function AnApplication() {
         std_department: 'Computer Engineering',
         std_faculty: 'Engineering',
 
-        status: 'Application Letter',
+        status: 'Application Letter Send',
         date: '2024-05-21',
         text: 'This is the application text.',
     };
@@ -19,11 +19,11 @@ function AnApplication() {
             <div>
                 <div id='info-openForm-content'>
                     <div id='std-info-content'>
-                        <p>Application status: <i>{applicaton.status}</i></p>
-                        <p>Application date: <i>{applicaton.date}</i></p>
-                        <p>Student Faculty: <i>{applicaton.std_faculty}</i></p>
-                        <p>Student Department: <i>{applicaton.std_department}</i></p>
-                        <p>Student Class: <i>{applicaton.std_class}</i></p>
+                        <p>Application status: <i className='std-info-status'>{applicaton.status}</i></p>
+                        <p>Application date: <i className='std-info'>{applicaton.date}</i></p>
+                        <p>Student Faculty: <i className='std-info'>{applicaton.std_faculty}</i></p>
+                        <p>Student Department: <i className='std-info'>{applicaton.std_department}</i></p>
+                        <p>Student Class: <i className='std-info'>{applicaton.std_class}</i></p>
                     </div>
                     <div id='open-forms-container'>
                         <button id='btn-open-letter'>Open the Application Letter</button>
@@ -31,10 +31,10 @@ function AnApplication() {
                     </div>
                 </div>
                 <div id='approve-disapprove-container'>
-                    <button id=''>Approve Application Letter</button>
-                    <button>Disapprove Application Letter</button>
-                    <button>Approve Application Form</button>
-                    <button>Disapprove Application Form</button>
+                    <button id='btn-approve-letter'>Approve Application Letter</button>
+                    <button id='btn-disapprove-letter'>Disapprove Application Letter</button>
+                    <button id='btn-approve-form'>Approve Application Form</button>
+                    <button id='btn-disapprove-form'>Disapprove Application Form</button>
                 </div>
             </div>
 

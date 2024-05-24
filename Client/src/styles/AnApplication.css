@@ -17,7 +17,20 @@ h2 #std-anapp-name {
     color: var(--light_red);
 }
 
+.std-info {
+    font-weight: 600;
+}
+
+.std-info-status {
+    text-decoration: underline;
+    color: #2d55b1;
+    font-weight: 600;
+}
+
 #info-openForm-content {
+    border: 1px solid #000000;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -36,6 +49,7 @@ h2 #std-anapp-name {
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;
+    font-weight: 600;
 }
 
 #open-forms-container #btn-open-form {
@@ -44,6 +58,7 @@ h2 #std-anapp-name {
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;
+    font-weight: 600;
 }
 
 #open-forms-container #btn-open-letter:hover {
@@ -61,9 +76,67 @@ h2 #std-anapp-name {
 #approve-disapprove-container {
     display: grid;
     row-gap: 30px;
-    column-gap: 30px;
+    column-gap: 100px;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    /* 2 satır */
+}
 
+#btn-approve-form {
+    background-color: var(--light_green);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#btn-disapprove-form {
+    background-color: var(--gray);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#btn-approve-form:hover {
+    background-color: var(--dark_green);
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#btn-disapprove-form:hover {
+    background-color: var(--dark_gray);
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#btn-approve-letter {
+    background-color: var(--light_green);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#btn-disapprove-letter {
+    background-color: var(--gray);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#btn-approve-letter:hover {
+    background-color: var(--dark_green);
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#btn-disapprove-letter:hover {
+    background-color: var(--dark_gray);
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
