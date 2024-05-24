@@ -16,11 +16,6 @@
   --dark_gray: #898686;
 }
 
-::selection{
-  color: white;
-  background-color: var(--light_red);
-}
-
 body {
   margin: 0;
   font-family: 'Poppins';

@@ -1,11 +1,10 @@
 .footer {
     width: 100%;
     height: fit-content;
-    position: absolute;
     bottom: 0;
 }
 
-.footer p{
+.footer p {
     text-align: center;
     font-size: 13px;
     margin: 0;

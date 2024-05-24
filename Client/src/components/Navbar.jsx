@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import { useUser } from '../contexts/UserContext';
-import { useNavigate } from 'react-router-dom';
 import "../styles/Navbar.css";
-import { usePopup } from '../contexts/PopUpContext';
 
 function Navbar({ navbar_items }) {
-    const { logout } = useUser();
-    const navigate = useNavigate();
     const [hoverIndex, setHoverIndex] = useState(-1);
-    const { showPopup } = usePopup();
 
     return (
         <div className="navbar">
@@ -29,11 +23,7 @@ function Navbar({ navbar_items }) {
             </nav>
             <div className="navbar_logout_button">
                 <div className="navbar_logout_button_icon background_contain"></div>
-                <div className="navbar_logout_button_text" onClick={() => {
-                    logout();
-                    showPopup("success", "Log out successfully");
-                    navigate("/");
-                }}>Logout</div>
+                <div className="navbar_logout_button_text">Logout</div>
             </div>
         </div>
     );

@@ -1,0 +1,65 @@
+.opportunities-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 20px;
+    width: 85%;
+    margin: 20px auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center;
+}
+
+h2 {
+    text-align: left;
+    margin-bottom: 40px;
+}
+
+.opportunity-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.opportunity-card {
+    background-color: var(--light_blue);
+    border-radius: 8px;
+    padding: 20px;
+    width: 40%;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.opportunity-card:hover {
+    background-color: #B4D0EA;
+    transition: all 0.3s;
+    scale: 1.03;
+    cursor: pointer;
+}
+
+.opp-logo {
+
+    width: 80px;
+    height: 60px;
+    flex-grow: 0;
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination button {
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.pagination button.active {
+    font-weight: bold;
+    text-decoration: underline;
+}
