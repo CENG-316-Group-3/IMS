@@ -84,9 +84,14 @@ app.post('/student/applyToInternship', async(req, res) => { // to send applicati
     const correlationId = generateUuid();
     emitMessageCorrelationId('/student/applyToInternship', msg, correlationId);
     const response = await waitForResponse(correlationId);
-    res.send(response);
-  
    
+  
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);
+    }   
 });
 
 app.post('/student/sendApplicationForm', async(req, res) => { 
@@ -95,7 +100,12 @@ app.post('/student/sendApplicationForm', async(req, res) => {
     const correlationId = generateUuid();
     emitMessageCorrelationId('/student/sendApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
-    res.send(response);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
+  
 });
 
 app.put('/company/acceptApplicationLetter', async(req, res) => { 
@@ -106,7 +116,11 @@ app.put('/company/acceptApplicationLetter', async(req, res) => {
     emitMessageCorrelationId('/company/acceptApplicationLetter', msg, correlationId);
     //res.send('Application letter is accepted by company');
     const response = await waitForResponse(correlationId);
-    res.send(response);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
 });
 
 app.put('/company/rejectApplicationLetter', async(req, res) => { 
@@ -116,7 +130,11 @@ app.put('/company/rejectApplicationLetter', async(req, res) => {
     const correlationId = generateUuid();
     emitMessageCorrelationId('/company/rejectApplicationLetter', msg, correlationId);
     const response = await waitForResponse(correlationId);
-    res.send(response);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
 });
 
 app.put('/company/rejectApplicationForm', async(req, res) => { 
@@ -126,7 +144,11 @@ app.put('/company/rejectApplicationForm', async(req, res) => {
     //emitMessage('/company/rejectApplicationForm', msg);
     emitMessageCorrelationId('/company/rejectApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
-    res.send(response);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
     //res.send('Application form is rejected by company');
 });
 
@@ -138,7 +160,11 @@ app.put('/summerPractiseCoordinator/rejectApplicationForm', async(req, res) => {
     //emitMessage('/summerPractiseCoordinator/rejectApplicationForm', msg);
     emitMessageCorrelationId('/summerPractiseCoordinator/rejectApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
-    res.send(response);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
     //res.send('Application form is rejected by summer practise coordinator');
 });
 
@@ -149,7 +175,11 @@ app.put('/company/acceptApplicationForm', async(req, res) => {
     //emitMessage('/company/acceptApplicationForm', msg);
     emitMessageCorrelationId('/company/acceptApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
-    res.send(response);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
     //res.send('Application form is accepted by company');
 });
 
@@ -157,8 +187,14 @@ app.put('/company/acceptApplicationForm', async(req, res) => {
 app.put('/summerPractiseCoordinator/acceptApplicationForm', async(req, res) => { 
     const content = req.body;
     const msg = JSON.stringify(content);
-    emitMessage('/summerPractiseCoordinator/acceptApplicationForm', msg);
-    res.send('Application form is accepted by summer Practise Coordinator');
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/summerPractiseCoordinator/acceptApplicationForm', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
 });
 
 
@@ -171,7 +207,24 @@ app.get('/applicationLetter', async (req, res) => {
     const correlationId = generateUuid();
     emitMessageCorrelationId('/applicationLetter', msg, correlationId);
     const response = await waitForResponse(correlationId);
-    res.send(response);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value);
+    }else{
+        res.status(400).json(value);}
+});
+
+app.get('/student/status', async (req, res) => {
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/student/status', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value);
+    }else{
+        res.status(400).json(value);}
 });
 
 app.get('/applicationForm', async (req, res) => {
@@ -180,8 +233,70 @@ app.get('/applicationForm', async (req, res) => {
     const correlationId = generateUuid();
     emitMessageCorrelationId('/applicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
-    res.send(response);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value);
+    }else{
+        res.status(400).json(value);}
 });
+
+
+app.post('/sendFeedback', async(req, res) => { 
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/sendFeedback', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
+});
+
+app.put('/student/cancelApplication', async(req, res) => { 
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/student/cancelApplication', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
+});
+
+
+app.put('/student/cancelApplicationForm', async(req, res) => { 
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/student/cancelApplicationForm', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
+});
+
+
+
+
+app.put('/summerPracticeCoordinator/deleteApplication', async(req, res) => { 
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/summerPracticeCoordinator/deleteApplication', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    value = JSON.parse(response);
+    if (value.status === 200){
+        res.status(200).json(value.message);
+    }else{
+        res.status(400).json(value.message);}
+});
+
 
 // Emit message without correlationId
 function emitMessage(routingKey, message) {
@@ -196,6 +311,8 @@ async function handleError(msg) {
     console.log(message);
     return 1;
 }
+
+
 
 // Start the Express server
 app.listen(4001, () => {
