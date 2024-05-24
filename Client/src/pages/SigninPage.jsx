@@ -1,45 +1,62 @@
-import { useState } from 'react';
-import { useUser } from '../UserContext';
-import { useNavigate } from 'react-router-dom';
+import { React, useState, useEffect } from 'react';
+import { useUser } from '../contexts/UserContext';
+import { usePopup } from '../contexts/PopUpContext';
+import { useNavigate } from "react-router-dom";
 import InputContainer from "../components/InputContainer";
-import "../styles/StudentLoginPage.css";
+import "../styles/SigninPage.css";
 import profile_icon from "../assets/user.png";
 import padlock_icon from "../assets/padlock.png";
 import password_hide from "../assets/hide.png";
 import password_show from "../assets/show.png";
 import SignInRegisterPanel from '../components/SignInRegisterPanel';
 
-function StudentLoginPage({ role }) {
-    const { login } = useUser();
+function SigninPage({ role }) {
+    const { user, login } = useUser();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [password_hidden, setPasswordHidden] = useState(true);
     const [password_type, setPasswordType] = useState("password");
     const navigate = useNavigate();
+    const { showPopup } = usePopup();
+
+    useEffect(()=> {
+        if(user)
+            navigate("/main");
+    }, [user]);
 
     const handleSignIn = async () => {
-        if (email != "" && password != ""){
+        if (email === "") {
+            showPopup("error", "You need to enter your email!");
+            return;
+        }
+        if (password === "") {
+            showPopup("error", "You need to enter your password!");
+            return;
+        }
+    
+        try {
             const response = await fetch(`http://localhost:3000/ims/login/${role}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ [`${role}Mail`]: email, password})
-            }).then(response => {
-                if (response.status == 200) {
-                    return response.json();
-                } else {
-                    throw new Error('Network response was not ok.'); // TODO
-                }
-            }).then(data => {
-                login(data);
+                body: JSON.stringify({ [`${role}Mail`]: email, password })
+            });
+    
+            if (response.status === 200) {
+                const userData = await response.json();
+                await login(userData);
+                showPopup("success", `Signed in successfully, welcome ${userData.user[userData.role + "Name"]}`);
                 navigate("/main");
-            }).catch(error => {
-                console.error('There was a problem with your fetch operation:', error); // TODO
-            });;
-        }
-        else{
-            //TODO error
+            } else {
+                setEmail("");
+                setPassword("");
+                showPopup("error", "Email or password is wrong! Try again");
+            }
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+            showPopup("error", "There is a problem in connection");
         }
     };
+    
 
     const toggle_password_hide_state = () => {
         setPasswordHidden(!password_hidden);
@@ -73,4 +90,4 @@ function StudentLoginPage({ role }) {
     );
 }
 
-export default StudentLoginPage;
+export default SigninPage;
