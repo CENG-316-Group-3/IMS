@@ -7,10 +7,15 @@ import { main_page_config } from "../config";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import NewAnnouncement from "../components/NewAnnouncement";
+
 
 import user_icon from "../assets/user.png";
-import Announcements from "../components/Announcements";
+import NewAnnouncement from "../page_contents/company/NewAnnouncement";
+import Announcements from "../page_contents/company/Announcements";
+import Popup from "../components/Popup";
+import ApplicationsList from "../page_contents/company/ApplicationsList";
+import AnApplication from "../page_contents/company/AnApplication";
+
 
 function MainPage() {
     const { showPopup } = usePopup();
