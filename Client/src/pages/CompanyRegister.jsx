@@ -13,11 +13,6 @@ function CompanyRegister() {
     const [password, setPassword] = useState("");
     const [confirm_password, setConfirmPassword] = useState("");
     const [address, setAddress] = useState("");
- 
-    useEffect(() => {
-        if(user != null)
-            navigate("/main");
-    }, [user]);
 
     const handle_register = async (event) => {
         event.preventDefault()

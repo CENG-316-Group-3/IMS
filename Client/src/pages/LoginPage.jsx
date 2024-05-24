@@ -1,21 +1,8 @@
 import "../styles/LoginPage.css";
 import { Link } from 'react-router-dom';
 import { React, useEffect } from 'react';
-import { useUser } from '../contexts/UserContext';
-import { useNavigate } from "react-router-dom";
-import { usePopup } from '../contexts/PopUpContext';
 
 function LoginPage() {
-    const {user} = useUser();
-    const { showPopup } = usePopup();
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if(user){
-            showPopup("info", "You have already signed in");
-            navigate("/main");
-        }
-    }, [user]);
 
     return (
         <div className="page_div">
