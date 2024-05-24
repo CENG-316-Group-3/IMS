@@ -23,13 +23,6 @@ function MainPage() {
     // let DynamicComponent = (content != null) ? main_page_config.company.page_content[content] : null;
     const { user } = useUser();
     const navigate = useNavigate();
-    
-    useEffect(() => {
-        if(!user){
-            showPopup("alert", "You need to sign in first !");
-            navigate("/");
-        }
-    }, [user]);
 
     return (
         <div className="main_page_div">

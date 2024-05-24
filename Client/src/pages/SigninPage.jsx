@@ -11,18 +11,13 @@ import password_show from "../assets/show.png";
 import SignInRegisterPanel from '../components/SignInRegisterPanel';
 
 function SigninPage({ role }) {
-    const { user, login } = useUser();
+    const { login } = useUser();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [password_hidden, setPasswordHidden] = useState(true);
     const [password_type, setPasswordType] = useState("password");
     const navigate = useNavigate();
     const { showPopup } = usePopup();
-
-    useEffect(()=> {
-        if(user)
-            navigate("/main");
-    }, [user]);
 
     const handleSignIn = async () => {
         if (email === "") {
