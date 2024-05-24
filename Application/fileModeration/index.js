@@ -253,9 +253,9 @@ async function processGetApplicationLetter(message){
         }
         // Return the application letter and student information as a JSON response
 
-        console.log("\n", applicationLetter.toJSON());
+        
         console.log( message.properties.correlationId);
-        emitMessageCorrelationId('success', applicationLetter, message.properties.correlationId);
+        emitMessageCorrelationId('success',JSON.stringify( applicationLetter.toJSON()), message.properties.correlationId);
     } catch (error) {
         console.error('Error retrieving application letter:', error);
         // Return a 500 Internal Server Error response in case of an error
@@ -265,7 +265,8 @@ async function processGetApplicationLetter(message){
 
 async function emitMessageCorrelationId(routingKey, message, correlationId) {
     const exchange = 'direct_logs';    
-    channel.publish(exchange, routingKey, Buffer.from(msg),{
+    
+    channel.publish(exchange, routingKey, Buffer.from(message),{
         correlationId: correlationId
     });
     console.log(`[x] Sent message with routing key ${routingKey}: '${message}'`);
@@ -345,7 +346,7 @@ async function processGetApplicationForm(message){
 
         console.log("\n", applicationForm.toJSON());
         console.log( message.properties.correlationId);
-        emitMessageCorrelationId('success', applicationForm, message.properties.correlationId);
+        emitMessageCorrelationId('success',JSON.stringify( applicationForm.toJSON()), message.properties.correlationId);
     } catch (error) {
         console.error('Error retrieving application letter:', error);
         // Return a 500 Internal Server Error response in case of an error

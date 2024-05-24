@@ -80,6 +80,9 @@ function waitForResponse(correlationId) {
 app.post('/student/applyToInternship', async(req, res) => { // to send application letter
     const content = req.body;
     const msg = JSON.stringify(content);
+    emitMessageCorrelationId('/student/applyToInternship', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    res.send(response);
     emitMessage('/student/applyToInternship', msg);
     res.send('Application letter is created');
 });
