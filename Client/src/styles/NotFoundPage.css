@@ -1,0 +1,29 @@
+.not_found_page_div{
+    width: 100%;
+    min-height: 100vh;
+    background-image: url(../assets/spaceman-galaxy-thumb.jpg);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.not_found_content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 400px;
+}
+
+.not_found_content span {
+    color: red;
+}
+
+.not_found_content h2{
+    font-size: 50px;
+}
+
+.not_found_content h3{
+    font-size: 30px;
+}

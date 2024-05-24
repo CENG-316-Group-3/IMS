@@ -6,14 +6,15 @@
     justify-content: space-between;
 }
 
-.main_page_section{
+.main_page_section {
     flex-grow: 1;
-    margin-top: 130px;
+    /* margin-top: 130px; */
+    /* Opportunities yaparken çok kötü göründü gereksiz olabilir */
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
 }
 
-.main_page_content{
+.main_page_content {
     flex-grow: 1;
 }
