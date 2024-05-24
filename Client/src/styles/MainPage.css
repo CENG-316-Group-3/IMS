@@ -8,8 +8,7 @@
 
 .main_page_section {
     flex-grow: 1;
-    /* margin-top: 130px; */
-    /* Opportunities yaparken çok kötü göründü gereksiz olabilir */
+    margin-top: 130px;
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;

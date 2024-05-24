@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { React, useEffect } from 'react';
 
 function LoginPage() {
+
     return (
         <div className="page_div">
             <div className="page_content">
