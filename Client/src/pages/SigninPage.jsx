@@ -44,12 +44,10 @@ function SigninPage({ role }) {
             } else {
                 setEmail("");
                 setPassword("");
-                if (response.status === 401)
-                    showPopup("error", "Email or password is wrong! Try again");
-                else if (response.status === 500)
-                    showPopup("error", "Internal server error occured !");
+                showPopup("error", "Email or password is wrong! Try again");
             }
         } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
             showPopup("error", "There is a problem in connection");
         }
     };

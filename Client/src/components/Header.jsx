@@ -7,7 +7,7 @@ function Header({ username, profile_icon, profile_link }) {
     return (
         <div className="header">
             <div className="header_left_part">
-                <Link to={"/main"}><div className="header_logo background_contain"></div></Link>
+                <div className="header_logo background_contain"></div>
                 <h1>IMS</h1>
             </div>
             <div className="header_right_part">

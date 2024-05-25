@@ -1,16 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import '../../styles/NewAnnouncement.css';
-import { useUser } from "../../contexts/UserContext";
-import { usePopup } from '../../contexts/PopUpContext';
 
 const NewAnnouncement = () => {
-    const { user } = useUser();
-    const { showPopup } = usePopup();
     const [file, setFile] = useState(null);
     const [title, setTitle] = useState('');
     const [position, setPosition] = useState('');
     const [description, setDescription] = useState('');
-    const fileInputRef = useRef(null);
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -18,47 +13,16 @@ const NewAnnouncement = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(!file)
-            showPopup("error", "You need to select a file !");
-        else if(title === "")
-            showPopup("error", "Title cannot be empty !");
-        else if(position === "")
-            showPopup("error", "Position cannot be empty !");
-        else;
-            //send_data();
-    };
-
-    const send_data = async () => {
-        try {
-            const response = await fetch(`//TODO//`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ companyMail: user.user.companyMail })
-            });
-    
-            if (response.status === 200) {
-                showPopup("success", "Announcement published successfully");
-                handleCancel();
-            } else {
-                if (response.status === 400)
-                    showPopup("error", "Given company does not exist !");
-                else if (response.status === 500)
-                    showPopup("error", "Internal server error occured !");
-                handleCancel();
-            }
-        } catch (error) {
-            showPopup("error", "There is a problem in connection");
-        }
+        // Form submission logic here
+        console.log({ file, title, position, description });
     };
 
     const handleCancel = () => {
+        // Reset form fields
         setFile(null);
         setTitle('');
         setPosition('');
         setDescription('');
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
     };
 
     return (
@@ -67,7 +31,7 @@ const NewAnnouncement = () => {
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>File:</label>
-                    <input type="file" accept=".doc,.docx,application/pdf" onChange={handleFileChange} ref={fileInputRef}/>
+                    <input type="file" onChange={handleFileChange} />
                 </div>
                 <div className="form-group">
                     <label>Title:</label>

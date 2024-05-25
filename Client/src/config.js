@@ -1,4 +1,4 @@
-/// Icons //
+// Icons //
 import document_red from "./assets/document_red.png";
 import document_white from "./assets/document_white.png";
 import megaphone_red from "./assets/megaphone_red.png";
@@ -9,50 +9,52 @@ import new_app_form_white from "./assets/new_app_form_white.png";
 import new_app_form_red from "./assets/new_app_form_red.png";
 import briefcase_red from "./assets/briefcase_red.png";
 import briefcase_white from "./assets/briefcase_white.png";
+import NewAnnouncement from "./page_contents/company/NewAnnouncement";
 
-// Company Page Contents //
-import CompanyNewAnnouncement from "./page_contents/company/NewAnnouncement";
-import CompanyAnApplication from "./page_contents/company/AnApplication";
-import CompanyAnnouncements from "./page_contents/company/Announcements";
-import CompanyApplications from "./page_contents/company/ApplicationsList";
-
-const main_config = {
+const main_page_config = {
     company: {
         navbar_items: [
-            { icon: megaphone_red, hover_icon: megaphone_white, text: "Internship Announcements", link: "/company_internship_announcements" },
-            { icon: megaphone_red, hover_icon: megaphone_white, text: "New Internship Announcement", link: "/company_new_internship_announcement" },
-            { icon: app_form_red, hover_icon: app_form_white, text: "Applications", link: "/company_applications" },
+            { icon: document_red, hover_icon: document_white, text: "Documents" },
+            { icon: megaphone_red, hover_icon: megaphone_white, text: "Announcements" },
+            { icon: megaphone_red, hover_icon: megaphone_white, text: "New Announcements" },
+            { icon: app_form_red, hover_icon: app_form_white, text: "Applications" },
         ],
-        allowed_routes: [
-            "/main", "/company_internship_announcements", "/company_new_internship_announcement", "/company_applications", "/company_an_application/:id", 
+        page_content: {
+            new_announcement: NewAnnouncement, 
+        }
+    },
+    coordinator: {
+        navbar_items: [
+            { icon: document_red, hover_icon: document_white, text: "Documents" },
+            { icon: megaphone_red, hover_icon: megaphone_white, text: "Announcements" },
+            { icon: megaphone_red, hover_icon: megaphone_white, text: "New Announcements" },
+            { icon: app_form_red, hover_icon: app_form_white, text: "Applications" },
+            { icon: briefcase_red, hover_icon: briefcase_white, text: "Internship Opportunities" },
+            { icon: briefcase_red, hover_icon: briefcase_white, text: "Company Registers" }, // TODO add Icon
         ],
+        page_content: {
+
+        }
     },
     student: {
         navbar_items: [
-            { icon: megaphone_red, hover_icon: megaphone_white, text: "Announcements", link: "/student_announcements" },
-            { icon: app_form_red, hover_icon: app_form_white, text: "Applications", link: "/student_applications" },
-            { icon: new_app_form_red, hover_icon: new_app_form_white, text: "New Application", link: "/student_new_application" },
-            { icon: briefcase_red, hover_icon: briefcase_white, text: "Opportunities", link: "/student_opportunities" }
+            { icon: document_red, hover_icon: document_white, text: "Documents" },
+            { icon: megaphone_red, hover_icon: megaphone_white, text: "Announcements" },
+            { icon: app_form_red, hover_icon: app_form_white, text: "Applications" },
+            { icon: briefcase_red, hover_icon: briefcase_white, text: "Opportunities" },
         ],
-        allowed_routes: [
-            "/main", "/student_announcements", "/student_applications", "/student_new_application", "/student_opportunities",
+        page_content: {
+
+        }
+    },
+    secretariat: {
+        navbar_items: [
+            { icon: document_red, hover_icon: document_white, text: "Documents" },
         ],
-    }
+        page_content: {
+
+        }
+    },
 };
 
-const site_map = [
-    // Company Routes //
-    { link: "/company_internship_announcements", page_content: CompanyAnnouncements},
-    { link: "/company_new_internship_announcement", page_content: CompanyNewAnnouncement },
-    { link: "/company_applications", page_content: CompanyApplications },
-    { link: "/company_an_application/:id", page_content: CompanyAnApplication },
-
-    // Student Routes //
-    { link: "/student_announcements", page_content: null },
-    { link: "/student_applications", page_content: null },
-    { link: "/student_new_application", page_content: null },
-    { link: "/student_opportunities", page_content: null },
-
-];
-
-export {main_config, site_map};
+export {main_page_config};

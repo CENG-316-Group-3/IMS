@@ -16,8 +16,10 @@ function CompanyRegister() {
 
     const handle_register = async (event) => {
         event.preventDefault()
-        if (email == "")
+        if (email == ""){
             showPopup("error", "Please enter an email !");
+            return -1;
+        }
         else if (name == "")
             showPopup("error", "Please enter a name !");
         else if (password == "")
@@ -28,33 +30,7 @@ function CompanyRegister() {
             showPopup("error", "Please confirm password !");
         else if (password !== confirm_password)
             showPopup("error", "Passwords did not match !");
-        else{
-            try {
-                const response = await fetch(`http://localhost:3000/ims/register/company`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ companyMail: email, password, companyName: name, address })
-                });
-        
-                if (response.status === 200) {
-                    showPopup("success", "Registered successfully");
-                    navigate("/company-login");
-                } else {
-                    setEmail("");
-                    setPassword("");
-                    setName("");
-                    setConfirmPassword("");
-                    setAddress("");
-                    
-                    if (response.status === 401)
-                        showPopup("error", "Some register informations are wrong ! Try again");
-                    if (response.status === 500)
-                        showPopup("error", "Internal server error occured !");
-                }
-            } catch (error) {
-                showPopup("error", "There is a problem in connection");
-            }
-        }
+        // TODO gateway
     };
 
     return (
@@ -77,7 +53,7 @@ function CompanyRegister() {
                             <input type="password" className='company-register-inf' name='confirm-password' onChange={(event) => {setConfirmPassword(event.target.value)}} /><br />
 
                             <label id='form-content'>Company Address:</label><br />
-                            <input type="text" className='company-register-inf' name='address'maxLength={100} onChange={(event) => {setAddress(event.target.value)}}/><br />
+                            <input type="text" className='company-register-inf' name='address' onChange={(event) => {setAddress(event.target.value)}}/><br />
 
                             <button id='register_button' type="submit">Sign Up</button>
                             <div className='already_login'>
