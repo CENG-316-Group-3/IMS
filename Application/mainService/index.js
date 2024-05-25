@@ -235,9 +235,20 @@ async function processStudentApplyToInternship(message){
         emitMessageCorrelationId('application letter create',  JSON.stringify(content),  correlationId);    
         const response = await waitForResponse(correlationId);
         
+        const mailOptions = {
+            receiver_mail: content.companyMail,
+            title : "application letter sent",
+            content: `${content.studentMail} sent you application letter`
+            //html: "<h1>texthtml</h1>"
+            }
+
+      
+
+
         if (response.includes('application letter created')) {
             await processApplicationLetterCreated(message);
             emitMessageCorrelationId('success', JSON.stringify({ message: 'Application Letter is Sent', stat: 200}), message.properties.correlationId);
+            emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);
         }else{
             throw new Error('Application letter not created');
         }
@@ -458,6 +469,8 @@ app.put('/summerPractiseCoordinator/acceptApplicationForm', async(req, res) => {
     }
 });
 */
+
+
 
 async function processGetStudentStatusById(message){
     const { studentMail, announcementId, companyMail} = JSON.parse(message.content.toString());
