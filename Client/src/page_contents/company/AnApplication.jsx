@@ -16,10 +16,8 @@ function AnApplication() {
     const [date, setDate] = useState("");
 
     useEffect(() => {
-        console.log(id);
-        //if(id)
-            //fetch_data();
-    }, [id]);
+        //fetch_data();
+    }, []);
 
     const fetch_data = async () => {
         try {
@@ -36,11 +34,11 @@ function AnApplication() {
                     showPopup("error", "Given application does not exist !");
                 else if (response.status === 500)
                     showPopup("error", "Internal server error occured !");
-                navigate("/company_an_application");
+                navigate("/company_applications");
             }
         } catch (error) {
             showPopup("error", "There is a problem in connection");
-            navigate("/company_an_application");
+            navigate("/company_applications");
         }
     };
 

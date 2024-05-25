@@ -7,6 +7,7 @@ import MainPage from "./pages/MainPage";
 import CompanyRegister from './pages/CompanyRegister';
 import NotFoundPage from "./pages/NotFoundPage";
 import Popup from "./components/Popup";
+import EmptyContent from "./components/EmptyContent";
 import { useUser } from "./contexts/UserContext";
 import { usePopup } from './contexts/PopUpContext';
 import ProtectedRoute from "./modules/ProtectedRoute";
@@ -34,8 +35,7 @@ function App() {
           <Route path={"/main"} element={<ProtectedRoute cases={[{protected_route:"/", condition_handler: () => {return !user}, optional_conditional_handler_operation: () => {showPopup("alert", "You need to sign in first !")}}]}>< MainPage></MainPage></ProtectedRoute>} /> 
 
           {site_map.map((route, key) => {
-            if (!route.page_content) return null;
-            const DynamicComponent = route.page_content;
+            const DynamicComponent = (route.page_content) ? route.page_content : EmptyContent;
             return <Route key={key} path={route.link} element={<ProtectedRoute cases={
               [{protected_route:"/", condition_handler: () => {return !user}, optional_conditional_handler_operation: () => {showPopup("alert", "You need to sign in first !")}},
               (user != null) ? {protected_route:"/main", condition_handler: () => !main_config[user.role].allowed_routes.includes(route.link), optional_conditional_handler_operation: () => {showPopup("alert", "User does not belongs to specified page !")}} : null,

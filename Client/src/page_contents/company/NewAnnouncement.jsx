@@ -18,9 +18,7 @@ const NewAnnouncement = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(!file)
-            showPopup("error", "You need to select a file !");
-        else if(title === "")
+        if(title === "")
             showPopup("error", "Title cannot be empty !");
         else if(position === "")
             showPopup("error", "Position cannot be empty !");
