@@ -1,14 +1,13 @@
 import React, { useState, useRef } from 'react';
-import '../../styles/NewAnnouncement.css';
+import '../../styles/CoordinatorNewAnnouncement.css';
 import { useUser } from "../../contexts/UserContext";
 import { usePopup } from '../../contexts/PopUpContext';
 
-const NewAnnouncement = () => {
+function CoordinatorNewAnnouncement() {
     const { user } = useUser();
     const { showPopup } = usePopup();
     const [file, setFile] = useState(null);
     const [title, setTitle] = useState('');
-    const [position, setPosition] = useState('');
     const [description, setDescription] = useState('');
     const fileInputRef = useRef(null);
 
@@ -18,14 +17,12 @@ const NewAnnouncement = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(!file)
+        if (!file)
             showPopup("error", "You need to select a file !");
-        else if(title === "")
+        else if (title === "")
             showPopup("error", "Title cannot be empty !");
-        else if(position === "")
-            showPopup("error", "Position cannot be empty !");
         else;
-            //send_data();
+        //send_data();
     };
 
     const send_data = async () => {
@@ -35,7 +32,7 @@ const NewAnnouncement = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ companyMail: user.user.companyMail })
             });
-    
+
             if (response.status === 200) {
                 showPopup("success", "Announcement published successfully");
                 handleCancel();
@@ -54,20 +51,18 @@ const NewAnnouncement = () => {
     const handleCancel = () => {
         setFile(null);
         setTitle('');
-        setPosition('');
         setDescription('');
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
     };
-
     return (
         <div className="announcement-form-container">
             <h2>New Announcement</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>File:</label>
-                    <input type="file" accept=".doc,.docx,application/pdf" onChange={handleFileChange} ref={fileInputRef}/>
+                    <input type="file" accept=".doc,.docx,application/pdf" onChange={handleFileChange} ref={fileInputRef} />
                 </div>
                 <div className="form-group">
                     <label>Title:</label>
@@ -75,14 +70,6 @@ const NewAnnouncement = () => {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Position:</label>
-                    <input
-                        type="text"
-                        value={position}
-                        onChange={(e) => setPosition(e.target.value)}
                     />
                 </div>
                 <div className="form-group">
@@ -98,7 +85,7 @@ const NewAnnouncement = () => {
                 </div>
             </form>
         </div>
-    );
-};
+    )
+}
 
-export default NewAnnouncement;
+export default CoordinatorNewAnnouncement
