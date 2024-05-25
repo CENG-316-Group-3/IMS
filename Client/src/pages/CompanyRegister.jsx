@@ -16,10 +16,8 @@ function CompanyRegister() {
 
     const handle_register = async (event) => {
         event.preventDefault()
-        if (email == ""){
+        if (email == "")
             showPopup("error", "Please enter an email !");
-            return -1;
-        }
         else if (name == "")
             showPopup("error", "Please enter a name !");
         else if (password == "")
@@ -79,7 +77,7 @@ function CompanyRegister() {
                             <input type="password" className='company-register-inf' name='confirm-password' onChange={(event) => {setConfirmPassword(event.target.value)}} /><br />
 
                             <label id='form-content'>Company Address:</label><br />
-                            <input type="text" className='company-register-inf' name='address' onChange={(event) => {setAddress(event.target.value)}}/><br />
+                            <input type="text" className='company-register-inf' name='address'maxLength={100} onChange={(event) => {setAddress(event.target.value)}}/><br />
 
                             <button id='register_button' type="submit">Sign Up</button>
                             <div className='already_login'>
