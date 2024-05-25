@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import "../styles/Navbar.css";
 import { usePopup } from '../contexts/PopUpContext';
 
-function Navbar({ navbar_items }) {
+function Navbar({ navbar_items, link_handler }) {
     const { logout } = useUser();
     const navigate = useNavigate();
     const [hoverIndex, setHoverIndex] = useState(-1);
@@ -19,6 +19,7 @@ function Navbar({ navbar_items }) {
                         key={index}
                         onMouseEnter={() => setHoverIndex(index)}
                         onMouseLeave={() => setHoverIndex(-1)}
+                        onClick={() => navigate(item.link)}
                     >
                         <HoverIcon
                             icon={hoverIndex === index ? item.hover_icon : item.icon}

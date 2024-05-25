@@ -30,7 +30,33 @@ function CompanyRegister() {
             showPopup("error", "Please confirm password !");
         else if (password !== confirm_password)
             showPopup("error", "Passwords did not match !");
-        // TODO gateway
+        else{
+            try {
+                const response = await fetch(`http://localhost:3000/ims/register/company`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ companyMail: email, password, companyName: name, address })
+                });
+        
+                if (response.status === 200) {
+                    showPopup("success", "Registered successfully");
+                    navigate("/company-login");
+                } else {
+                    setEmail("");
+                    setPassword("");
+                    setName("");
+                    setConfirmPassword("");
+                    setAddress("");
+                    
+                    if (response.status === 401)
+                        showPopup("error", "Some register informations are wrong ! Try again");
+                    if (response.status === 500)
+                        showPopup("error", "Internal server error occured !");
+                }
+            } catch (error) {
+                showPopup("error", "There is a problem in connection");
+            }
+        }
     };
 
     return (

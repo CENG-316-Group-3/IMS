@@ -1,4 +1,5 @@
 import React from 'react'
+
 import "../../styles/AnOpportunity.css";
 import buildIcon from "../../assets/buildings.png"
 
@@ -33,6 +34,7 @@ function AnOpportunity() {
                 <button className='edit-btn' id='download-file-btn'>Download File</button>
                 <button className='publish-btn'>APPLY</button>
             </div>
+
         </div>
     )
 }
