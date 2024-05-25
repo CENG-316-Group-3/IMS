@@ -14,6 +14,7 @@ const startRabbitMQConsumer = () => {
             const queueName = 'notificationQueue';
             const routingKeys = [
                 'notification.create',//
+                'notification.list',
                 'notification.get'
                 
             ];
@@ -40,11 +41,12 @@ const startRabbitMQConsumer = () => {
                     try {
                         switch (routingKey) {
                             case 'notification.create':
-                                console.log("notif");
                                 await NotificationController.createNotification(msgContent, channel, message);
                                 break;
-                            case 'notification.get':
+                            case 'notification.list':
                                 await NotificationController.getNotifications(msgContent, channel, message);
+                            case 'notification.get':
+                                await NotificationController.getNotification(msgContent, channel, message);
                                 break;
                             default:
                                 console.log(`Unknown routing key: ${routingKey}`);

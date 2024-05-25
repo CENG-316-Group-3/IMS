@@ -21,7 +21,22 @@ exports.getNotifications = async function(receiver_mail){
                 receiver_mail : receiver_mail
             }
         });
-        return notifications[0].dataValues;
+        return notifications;
+    }
+    catch(error){
+        console.log(error);
+    }
+    
+}
+
+exports.getNotification = async function(id){
+    try{
+        const notifications = await Notification.findAll({
+            where: {
+                id : id
+            }
+        });
+        return notifications;
     }
     catch(error){
         console.log(error);
