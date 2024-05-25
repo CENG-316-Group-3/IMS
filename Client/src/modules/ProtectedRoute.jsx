@@ -1,10 +1,11 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-function ProtectedRoute({ cases, children }) {
-  console.log(cases);
+function ProtectedRoute({ cases, children }) { 
 
   for (const c of cases){
+    
+    if (c == null) continue;
     if (c.condition_handler()) {
       c.optional_conditional_handler_operation();
       return <Navigate to={c.protected_route} replace />;

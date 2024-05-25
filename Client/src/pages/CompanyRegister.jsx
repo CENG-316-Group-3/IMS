@@ -47,7 +47,11 @@ function CompanyRegister() {
                     setName("");
                     setConfirmPassword("");
                     setAddress("");
-                    showPopup("error", "Some register informations are wrong ! Try again");
+                    
+                    if (response.status === 401)
+                        showPopup("error", "Some register informations are wrong ! Try again");
+                    if (response.status === 500)
+                        showPopup("error", "Internal server error occured !");
                 }
             } catch (error) {
                 showPopup("error", "There is a problem in connection");
