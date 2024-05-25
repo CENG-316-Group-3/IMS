@@ -4,7 +4,7 @@ import "../../styles/StudentApplicationsList.css";
 
 const ITEMS_PER_PAGE = 6;
 
-function StudentApplicationsList() {
+function CoordinatorViewStdApplicationsList() {
     const [file, setFile] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -88,4 +88,4 @@ function StudentApplicationsList() {
     )
 }
 
-export default StudentApplicationsList
+export default CoordinatorViewStdApplicationsList
