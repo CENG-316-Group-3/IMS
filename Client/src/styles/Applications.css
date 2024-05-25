@@ -31,9 +31,9 @@ td {
 
 th {
     font-weight: normal;
-    color: var(--mid_red);
+    color: #555;
 }
 
 td {
-    background-color: var(--light_blue);
+    background-color: #f0e6d8;
 }

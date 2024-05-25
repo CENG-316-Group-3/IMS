@@ -1,55 +1,28 @@
-import React, {useState, useEffect} from 'react';
-import '../../styles/Announcements.css';
-import { useUser } from "../../contexts/UserContext";
-import { usePopup } from '../../contexts/PopUpContext';
-import { useNavigate } from 'react-router-dom';
-import EmptyContent from "../../components/EmptyContent";
+import React from 'react';
+import '../styles/Announcements.css';
 
 const Announcements = () => {
-    const { user } = useUser();
-    const { showPopup } = usePopup();
-    const navigate = useNavigate();
-    const [announcements, setAnnouncements] = useState([]);
-
-    useEffect(() => {
-        //fetch_data();
-    }, []);
-
-    const fetch_data = async () => {
-        try {
-            const response = await fetch(`//TODO//`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ companyMail: user.user.companyMail })
-            });
-    
-            if (response.status === 200) {
-                /* TODO with response data setStates */
-            } else {
-                if (response.status === 400)
-                    showPopup("error", "Given company does not exist !");
-                else if (response.status === 500)
-                    showPopup("error", "Internal server error occured !");
-                navigate("/main");
-            }
-        } catch (error) {
-            showPopup("error", "There is a problem in connection");
-            navigate("/main");
-        }
-    };
+    const announcements = [
+        { id: 1, title: 'Announcement 1', position: 'Position 1', date: '2024-05-21' },
+        { id: 2, title: 'Announcement 2', position: 'Position 2', date: '2024-05-20' },
+        { id: 3, title: 'Announcement 3', position: 'Position 3', date: '2024-05-19' },
+        { id: 4, title: 'Announcement 4', position: 'Position 4', date: '2024-05-18' },
+    ];
 
     const handleEdit = (id) => {
-        // TODO //
+        // Edit logic here
+        console.log(`Edit announcement with id: ${id}`);
     };
 
     const handleDelete = (id) => {
-        // TODO //
+        // Delete logic here
+        console.log(`Delete announcement with id: ${id}`);
     };
 
     return (
         <div className="announcements-container">
             <h2>Announcements</h2>
-            <table style={{display: announcements.length == 0 ? "none" : "block"}}>
+            <table>
                 <thead>
                     <tr>
                         <th>Title</th>
@@ -82,7 +55,6 @@ const Announcements = () => {
                     ))}
                 </tbody>
             </table>
-            <div style={{display: announcements.length == 0 ? "block" : "none"}}><EmptyContent /></div>
         </div>
     );
 };

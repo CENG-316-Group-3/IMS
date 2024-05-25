@@ -1,7 +1,6 @@
 .not_found_page_div{
     width: 100%;
     min-height: 100vh;
-    background-image: url(../assets/spaceman-galaxy-thumb.jpg);
     color: white;
     display: flex;
     justify-content: center;

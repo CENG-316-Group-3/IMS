@@ -24,7 +24,7 @@ const main_config = {
             { icon: app_form_red, hover_icon: app_form_white, text: "Applications", link: "/company_applications" },
         ],
         allowed_routes: [
-            "main", "/company_internship_announcements", "/company_new_internship_announcement", "/company_applications", "/"
+            "/main", "/company_internship_announcements", "/company_new_internship_announcement", "/company_applications", "/company_an_application/:id", 
         ],
     },
     student: {
@@ -35,7 +35,7 @@ const main_config = {
             { icon: briefcase_red, hover_icon: briefcase_white, text: "Opportunities", link: "/student_opportunities" }
         ],
         allowed_routes: [
-            "main", "/student_announcements", "/student_applications", "/student_new_application", "/student_opportunities", "/"
+            "/main", "/student_announcements", "/student_applications", "/student_new_application", "/student_opportunities",
         ],
     }
 };
@@ -45,7 +45,7 @@ const site_map = [
     { link: "/company_internship_announcements", page_content: CompanyAnnouncements},
     { link: "/company_new_internship_announcement", page_content: CompanyNewAnnouncement },
     { link: "/company_applications", page_content: CompanyApplications },
-    { link: "/company_an_application", page_content: CompanyAnApplication },
+    { link: "/company_an_application/:id", page_content: CompanyAnApplication },
 
     // Student Routes //
     { link: "/student_announcements", page_content: null },
