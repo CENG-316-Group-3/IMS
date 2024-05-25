@@ -1,0 +1,72 @@
+.application-form-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 20px;
+    width: 85%;
+    margin: 20px auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.form-content {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 20px;
+    width: 85%;
+    margin: 20px auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.coord-info-contain {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.table-section {
+    margin-bottom: 20px;
+}
+
+.main-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.main-table th,
+.main-table td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: left;
+}
+
+.center {
+    text-align: center;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.info-table {
+    width: 100%;
+}
+
+.info-table td {
+    padding: 5px;
+}
+
+.info-table input[type='radio'] {
+    margin-right: 5px;
+}
+
+
+.days-input {
+    width: 50px;
+}

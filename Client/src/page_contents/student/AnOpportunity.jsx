@@ -51,7 +51,6 @@ function AnOpportunity() {
                     <img src={buildIcon} alt="Company Logo" />
                 </div>
                 <div id='company_details'>
-
                     <div>Company Name: {company_name}</div>
                     <div>Company Email: {company_email}</div>
                     <div>Announcement Date: {date}</div>
