@@ -38,6 +38,23 @@ exports.getNotifications = async (msgContent, channel, message) => {
     }
 };
 
+exports.sendMail = async (msgContent, channel, message) => {
+    try {
+        const exchange = 'direct_logs'; 
+        console.log("yes");
+        console.log(msgContent);
+        //const { sender_mail, receiver_mail, notification_type, title, content } = msgContent;
+        await NotificationRepository.sendMail(msgContent);
+        channel.publish(exchange, 'success', Buffer.from(JSON.stringify({status: 200})),{
+            correlationId: message.properties.correlationId});  
+    } catch (error) {
+        console.error(error);
+        channel.publish(exchange, 'success', Buffer.from(JSON.stringify({ status: 400 })),{
+            correlationId: message.properties.correlationId});
+    }
+};
+
+
 exports.getNotification = async (msgContent, channel, message) => {
     try {
         const exchange = 'direct_logs';

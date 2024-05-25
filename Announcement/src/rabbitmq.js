@@ -79,7 +79,7 @@ const startRabbitMQConsumer = () => {
                             case 'admin.internship-announcements.get':
                                 await AnnouncementController.getAnnouncementById(msgContent, channel, message);
                                 break;
-                            case 'admin.internship-announcements.get':
+                            case 'admin.internship-announcements.delete':
                                 await AnnouncementController.deleteInternshipAnnouncement(msgContent, channel, message);
                                 break;
                             case 'admin.waiting-announcements.approve':
