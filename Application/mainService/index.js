@@ -200,10 +200,17 @@ async function processDepartmentSecrataryuploadSSI(message){
         const correlationId = generateUuid();
         emitMessageCorrelationId('create SSI document',  JSON.stringify(content),  correlationId);    
         const response = await waitForResponse(correlationId);
+        const mailOptions = {
+            receiver_mail: content.studentMail,
+            title : 'Departmant Secratary sent SSI document',
+            content: 'Departmant Secratary sent SSI document'
+            //html: "<h1>texthtml</h1>"
+            }
         
         if (response.includes('SSI document created')) {
             await processSSIDocumentCreated(message);
             emitMessageCorrelationId('success', JSON.stringify({ message: 'SSI document created', stat: 200}), message.properties.correlationId);
+            emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);
         }else{
             throw new Error('SSI document not created');
         }
@@ -241,7 +248,7 @@ async function processStudentApplyToInternship(message){
             content: `${content.studentMail} sent you application letter`
             //html: "<h1>texthtml</h1>"
             }
-
+                                                        
       
 
 
@@ -298,9 +305,17 @@ async function processStudentSendApplicationForm(message){
         emitMessageCorrelationId('application form create',  JSON.stringify(content), correlationId);    
         const response = await waitForResponse( correlationId);
        
+        const mailOptions = {
+            receiver_mail: content.companyMail,
+            title : "application form sent",
+            content: `${content.studentMail} sent you application form`
+            //html: "<h1>texthtml</h1>"
+            }
+                 
         if (response.includes('application form created')) {
             await processApplicationFormCreated(message);
             emitMessageCorrelationId('success', JSON.stringify({ message: 'Application Form is Sent' , stat : 200}), message.properties.correlationId);
+            emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);
         }else{
             throw new Error('Application form not created');
         }
@@ -331,7 +346,14 @@ async function processCompanyAcceptApplicationLetter(message){
     try {
         //emitMessage('success', JSON.stringify({ message: 'application letter is accepted' }));
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application letter is accepted', "", 'application letter created');
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application accepted by company' ,stat : 200}),  message.properties.correlationId);    
+        const mailOptions = {
+            receiver_mail: studentMail,
+            title : "company accepted your application letter",
+            content: `${companyMail} company accepted your application letter`
+            //html: "<h1>texthtml</h1>"
+            }
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application accepted by company' ,stat : 200}),  message.properties.correlationId);
+        emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);
     } catch (error) {
         emitMessageCorrelationId('success', JSON.stringify({ message: 'Error accepting Applicaton Letter ',stat : 400}), message.properties.correlationId);
     }
@@ -351,9 +373,16 @@ app.put('/company/acceptApplicationLetter', async(req, res) => {
 
 async function processCompanyRejectApplicationLetter(message){
     const { studentMail, announcementId, companyMail, content} = JSON.parse(message.content.toString());
+    const mailOptions = {
+        receiver_mail: studentMail,
+        title : "application letter rejected by company",
+        content: `${companyMail} rejected your application letter`
+        //html: "<h1>texthtml</h1>"
+        }
     try {
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application letter is rejected', content, 'application letter created');
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application letter is rejected', stat : 200 }),  message.properties.correlationId);    
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'company rejected application letter ', stat : 200 }),  message.properties.correlationId);  
+        emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);  
     } catch (error) {   
         emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status', stat : 400 }), message.properties.correlationId);
     }
@@ -373,7 +402,14 @@ async function processCompanyRejectApplicationForm(message){
     const { studentMail, announcementId, companyMail, content} = JSON.parse(message.content.toString());
     try {
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application form is rejected by company', content, 'application form is created');
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application form is rejected by company', stat :200 }),  message.properties.correlationId);   
+        const mailOptions = {
+            receiver_mail: studentMail,
+            title : "application form rejected by company",
+            content: `${companyMail} rejected your application form`
+            //html: "<h1>texthtml</h1>"
+        }
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application form is rejected by company', stat :200 }),  message.properties.correlationId);  
+        emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);  
         //emitMessage('success', JSON.stringify({ message: 'application form is rejected by company' }));
     } catch (error) {
         emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status', stat : 400 }), message.properties.correlationId);
@@ -396,9 +432,16 @@ async function processSummerPractiseCoordinatorRejectApplicationForm(message){
     const { studentMail, announcementId, companyMail, content} = JSON.parse(message.content.toString());
     try {
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application form is rejected by summer practise coordinator', content, 'application form is accepted by company');
-        emitMessageCorrelationId('success',  JSON.stringify({ message:  'application form rejected by summer practise coordinator', stat : 200}),  message.properties.correlationId);   
+        const mailOptions = {
+            receiver_mail: studentMail,
+            title : "application form rejected by summer practise coordinator",
+            content: "application form rejected by summer practise coordinator"
+            //html: "<h1>texthtml</h1>"
+        }
+        emitMessageCorrelationId('success',  JSON.stringify({ message:  'application form rejected by summer practise coordinator', stat : 200}),  message.properties.correlationId);
+        emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);     
         //emitMessage('success', JSON.stringify({ message: 'application form rejected by summer practise coordinator' }));
-    } catch (error) {
+    } catch (error) { 
         emitMessageCorrelationId('success',  JSON.stringify({ message: 'Error updating application status' ,stat : 400}),  message.properties.correlationId);   
     }
 }
@@ -420,13 +463,20 @@ async function processCompanyAcceptApplicationForm(message){
         const correlationId = generateUuid();
         emitMessageCorrelationId('application form accept',  JSON.stringify(content), correlationId); 
         const respons = await waitForResponse(correlationId);
+        const mailOptions = {
+            receiver_mail: content.studentMail,
+            title : "application form accepted by company",
+            content: `${content.companyMail} accepted and sent application form please check` 
+        }
         console.log(respons);
         
         
         if (respons.includes('application form accepted')) {
             await updateApplicationStatus(content.studentMail, content.announcementId, content.companyMail, 'application form is accepted by company', '', 'application form is created');
             emitMessageCorrelationId('success', JSON.stringify({ message: 'application form filled by company', stat : 200}), message.properties.correlationId);
+            emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);     
         }
+
         
         
         
@@ -453,7 +503,16 @@ async function processSummerPractiseCoordinatorAcceptApplicationForm(message){
     const { studentMail, announcementId, companyMail, content} = JSON.parse(message.content.toString());
     try {
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application form is accepted by summer practise coordinator', content, 'application form is accepted by company');
+       
+        const mailOptions = {
+            receiver_mail: studentMail,
+            title : 'application form accepted by summer practise coordinator',
+            content: 'summer practise coordinator accepted your application form'
+            //html: "<h1>texthtml</h1>"
+        };
+
         emitMessageCorrelationId('success',  JSON.stringify({ message: 'application form is accepted by summerPractiseCoordinator', stat : 200}),  message.properties.correlationId);   
+        emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);     
     } catch (error) {
         emitMessageCorrelationId('success',  JSON.stringify({ message: 'Error updating application status' ,stat : 400 }),  message.properties.correlationId);   
     }
@@ -526,13 +585,26 @@ async function processSendFeedBack(message) {
             emitMessageCorrelationId('success', JSON.stringify({ message: 'Application not found', stat : 400 }), message.properties.correlationId);
             return;
         }
-    
+        var whoMade ;
         if (application.status === 'application letter created'){
             newStatus = 'application letter rejected by company and feedback is sent';
+            whoMade = "summer practise coordinator";
         }else if(application.status === 'application form created'){
             newStatus = 'application form rejected by company and feedback is sent';
+            whoMade = companyMail;
         }else if(application.status === 'application form is accepted by company'){
             newStatus = 'application form rejected by summerPractiseCoordinator and feedback is sent';
+            whoMade = companyMail;
+        }
+        else if (application.status === 'application letter is rejected'){
+            newStatus = 'application letter rejected by company and feedback is sent';
+            whoMade = companyMail;
+        }else if(application.status === 'application form created'){
+            newStatus = 'application form is rejected by company';
+            whoMade = companyMail;
+        }else if(application.status === 'application form is rejected by summer practise coordinator'){
+            newStatus = 'application form rejected by summerPractiseCoordinator and feedback is sent';
+            whoMade = "summer practise coordinator";
         }
 
         // Check if the current status matches the allowed statuses
@@ -558,10 +630,17 @@ async function processSendFeedBack(message) {
                 },
             }
         );
-
+        const mailOptions = {
+            receiver_mail: studentMail,
+            title : "feedback is sent",
+            content: `${whoMade} accepted and sent application form please check` 
+            
+            //html: "<h1>texthtml</h1>"
+        }
         if (result[0] === 0) {
             console.log('No changes made to the application');
             emitMessageCorrelationId('success', JSON.stringify({ message: 'No changes made to the application' , stat : 400}), message.properties.correlationId);
+            emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);     
         } else {
             console.log('Application status updated successfully');
             emitMessageCorrelationId('success', JSON.stringify({ message: ' feedback send successfully',stat : 200 }), message.properties.correlationId);
@@ -591,7 +670,14 @@ async function processCancelApplication(message){
         
         if (application.status === 'application form is accepted by summer practise coordinator'){
             throw new Error('Application is started, communicate with your coordinator');}
-          
+        
+        const mailOptions = {
+            receiver_mail: studentMail,
+            title : "feedback is sent",
+            content: `${whoMade} accepted and sent application form please check` 
+            
+            //html: "<h1>texthtml</h1>"
+        }  
        
         //emitMessage('application letter create', JSON.stringify(content));
         const correlationId = generateUuid();
@@ -600,6 +686,8 @@ async function processCancelApplication(message){
         console.log("\n\n\n");
         console.log(response);
         deleteStudent(content.studentMail, content.announcementId, content.companyMail);
+
+        
         if (response.includes('Application canceled')) {
              emitMessageCorrelationId('success', JSON.stringify({ message: 'Application canceled',  stat : 200 }), message.properties.correlationId);
 

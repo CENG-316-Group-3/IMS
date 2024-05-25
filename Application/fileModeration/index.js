@@ -320,7 +320,7 @@ async function processGetSSI(message){
 
         
         console.log( message.properties.correlationId);
-        emitMessageCorrelationId('success',JSON.stringify(filePath), message.properties.correlationId);
+        emitMessageCorrelationId('success',filePath, message.properties.correlationId);
     } catch (error) {
         console.error('Error retrieving application letter:', error);
         // Return a 500 Internal Server Error response in case of an error
