@@ -77,7 +77,7 @@ const site_map = [
     { link: "/student_an_opportunity/:id", page_content:StudentAnOpportunity },
 
     // Coordinator Routes //
-
+    
 ];
 
 export {main_config, site_map};

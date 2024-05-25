@@ -10,6 +10,7 @@ import company_icon from "../assets/buildings.png";
 
 function MainPage({ children }) {
     const { user } = useUser();
+    console.log(user);
 
     return (
         <div className="main_page_div">

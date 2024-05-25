@@ -46,11 +46,13 @@ function SigninPage({ role }) {
                 setPassword("");
                 if (response.status === 401)
                     showPopup("error", "Email or password is wrong! Try again");
+                else if (response.status === 402)
+                    showPopup("alert", "Registration not approved yet");
                 else if (response.status === 500)
                     showPopup("error", "Internal server error occured !");
             }
         } catch (error) {
-            showPopup("error", "There is a problem in connection");
+            showPopup("error", "Internal server error occured !");
         }
     };
     
