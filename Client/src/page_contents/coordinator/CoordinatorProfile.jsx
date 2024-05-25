@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react'
 import '../../styles/StudentProfile.css'
 import { useUser } from "../../contexts/UserContext";
 
-function StudentProfile() {
+function CoordinatorProfile() {
+
     const { user } = useUser();
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
-    const [phone, setPhone] = useState("");
-    const [number, setNumber] = useState("");
-    const [faculty, setFaculty] = useState("");
-    const [department, setDepartment] = useState("");
-    const [grade, setGrade] = useState("");
+    const [mail, setMail] = useState("");
 
     useEffect(() => {
         //fetch_data();
@@ -52,26 +49,7 @@ function StudentProfile() {
                     <input id='std-profile-input' type="text" placeholder={last_name} readOnly /><br />
 
                     <label htmlFor="">E-mail:</label><br />
-                    <input id='std-profile-input' type="email" placeholder={user.user.studentMail} readOnly /><br />
-
-                    <label htmlFor="">Phone:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={phone} readOnly /><br />
-
-                </div>
-                <div className='student-profile-right'>
-
-                    <label htmlFor="">Student ID:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={number} readOnly /><br />
-
-                    <label htmlFor="">Faculty:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={faculty} readOnly /><br />
-
-                    <label htmlFor="">Department:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={department} readOnly /><br />
-
-                    <label htmlFor="">Class:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={grade} readOnly /><br />
-
+                    <input id='std-profile-input' type="email" placeholder={mail} readOnly /><br />
                 </div>
             </div>
 
@@ -79,4 +57,4 @@ function StudentProfile() {
     )
 }
 
-export default StudentProfile
+export default CoordinatorProfile
