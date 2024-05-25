@@ -5,8 +5,13 @@ const bodyParser = require('body-parser');
 const Students = require('./models/Students');
 const ApplicationLetter = require('./models/ApplicationLetter');
 const ApplicationForm = require('./models/ApplicationForm');
+const SSIdocument = require('./models/SSI');
 const Sequelize = require("sequelize");
 var amqp = require('amqplib/callback_api');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -34,7 +39,7 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
         const exchange = 'direct_logs';
         const queueName = 'applicationQueue';
         const routingKeys = ['application letter create', 'application form create', 'application form accept'
-            ,'/applicationLetter', '/applicationForm', 'cancel application', 'cancel application form'
+            ,'/applicationLetter', '/applicationForm', 'cancel application', 'cancel application form','create SSI document', '/getSSI'
         ];
         
         channel.assertExchange(exchange, 'direct', { durable: false });
@@ -68,6 +73,10 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
                     processCancelApplication(message)}
                 else if (message.fields.routingKey === 'cancel application form') {
                     processCancelApplicationForm(message)}
+                else if (message.fields.routingKey === 'create SSI document') {
+                    processCreateSSIdocument(message)}
+                else if (message.fields.routingKey === '/getSSI') {
+                    processGetSSI(message)}
                     
             }, { noAck: true });
         });
@@ -112,6 +121,62 @@ async function processApplicationLetter(message) {
         console.error('Error processing application letter:', error);
     }
 };
+async function processCreateSSIdocument(message) {
+    try {
+        const payload = JSON.parse(message.content.toString());
+        const jsonPayload = payload.jsonPayload;
+        const file = payload.file;
+
+        const filename = file.originalname;
+        const fileData = file.buffer;
+        const filePath = path.join(__dirname, 'files', filename);
+
+        const studentMail = jsonPayload.studentMail;
+        const announcementId = jsonPayload.announcementId;
+        const companyMail = jsonPayload.companyMail;
+
+        // Fetch the student details from the Students table
+        const student = await Students.findOne({ where: { studentMail } });
+        if (!student) {
+            console.error('Student not found:', studentMail);
+            throw new Error('Student not found');
+        }
+
+        fs.writeFileSync(filePath, Buffer.from(fileData));
+
+        // Find or create SSIdocument
+        const [ssidoc, created] = await SSIdocument.findOrCreate({
+            where: {
+                studentMail,
+                announcementId
+            },
+            defaults: {
+                studentMail,
+                announcementId,
+                companyMail,
+                fileName: filename,
+                path: filePath
+            }
+        });
+
+        if (!created) {
+            // If the document already exists, update its data
+            ssidoc.update({
+                companyMail,
+                fileName: filename,
+                path: filePath
+            });
+        }
+
+        console.log('SSI document added/updated in the database');
+
+        emitMessageCorrelationId('SSI document created', JSON.stringify({ message: 'SSI document created' }), message.properties.correlationId);
+    } catch (error) {
+        emitMessageCorrelationId('SSI document created', JSON.stringify({ message: 'SSI document not created' }), message.properties.correlationId);
+        console.error('Error processing SSI document:', error);
+    }
+};
+
 
 
 async function processApplicationFormAccept(message) {
@@ -223,7 +288,50 @@ app.post('/pushStudent', async(req, res) => {
     }
 });
 
+async function processGetSSI(message){
+    try {
+        // Extract query parameters from the request
+        msg = message.content.toString();
+        const { companyMail, announcementId, studentMail } = JSON.parse(msg);;
+
+        // Validate that all required query parameters are provided
+        if (!companyMail || !announcementId || !studentMail) {
+            emitMessage('error', JSON.stringify({ message: 'Missing required query parameters', stat : 400 }));
+        }
+
+        // Find the application letter and include the related student information
+        const SSI = await SSIdocument.findOne({
+            where: {
+                companyMail,
+                announcementId,
+                studentMail
+            }
+        });
+
+       
+        // Check if the application letter was found
+        if (!SSI) {
+            emitMessage('error', JSON.stringify({ message:  'Application letter not found', stat: 400 }));
+        }
+        // Return the application letter and student information as a JSON response
+        const filePath = SSI.path;
+       
+        
+
+        
+        console.log( message.properties.correlationId);
+        emitMessageCorrelationId('success',JSON.stringify(filePath), message.properties.correlationId);
+    } catch (error) {
+        console.error('Error retrieving application letter:', error);
+        // Return a 500 Internal Server Error response in case of an error
+        emitMessageCorrelationId('success','ssı found not found', message.properties.correlationId);
+        //emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
+    }
+}
+
+
 async function processGetApplicationLetter(message){
+    
     try {
         // Extract query parameters from the request
         msg = message.content.toString();

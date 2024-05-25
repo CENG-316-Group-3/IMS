@@ -27,7 +27,7 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
         const routingKeys = ['application letter created', 'application form created','/student/applyToInternship','/student/sendApplicationForm','/company/acceptApplicationLetter', 
         '/company/rejectApplicationLetter', '/company/rejectApplicationForm', '/summerPractiseCoordinator/rejectApplicationForm','/company/acceptApplicationForm', '/summerPractiseCoordinator/acceptApplicationForm'
         ,'application form accepted', '/student/status', '/sendFeedback', '/student/cancelApplication', '/student/cancelApplicationForm','application canceled','application form canceled' , '/summerPracticeCoordinator/deleteApplication', '/company/getApplicationsById'
-    , '/company/getApplications'];
+    , '/company/getApplications', '/departmentSecratary/uploadSSI','SSI document created'];
         // Declare the Direct Exchange
         channel.assertExchange(exchange, 'direct', { durable: false });
         channel.assertQueue(queueName, { exclusive: true }, function(error2, q) {
@@ -81,7 +81,8 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
                     processCommpanygetApplicationsById(message);
                 }else if  (message.fields.routingKey === '/company/getApplications'){
                     processGetAllByAnnoucnement(message);
-                }
+                }else if  (message.fields.routingKey === '/departmentSecratary/uploadSSI'){
+                    processDepartmentSecrataryuploadSSI(message);}
                 if (responseHandlers[correlationId]) {
                     responseHandlers[correlationId](content);
                     delete responseHandlers[correlationId];
@@ -158,6 +159,7 @@ async function processApplicationLetterCreated(message) {
         console.log('Application status updated to "application letter accepted"');
     } catch (error) {
         console.error('Error processing application letter created message:', error);
+        throw new Error('Error processing application letter created message:');
     }
 }
 
@@ -171,6 +173,49 @@ async function processApplicationFormCreated(message) {
         console.log('Application status updated to "application form created"');
     } catch (error) {
         console.error('Error processing application form created message:', error);
+        throw new Error('Error processing application form created message:');
+    }
+}
+
+
+async function processSSIDocumentCreated(message) {
+    try {
+        const content = JSON.parse(message.content.toString());
+        const { studentMail, announcementId, companyMail } = content.jsonPayload;
+
+        // Update the application status in the database
+        await updateApplicationStatus(studentMail, announcementId, companyMail, 'internship application is completed', '', 'application form is accepted by summer practise coordinator');
+        console.log('Application status updated to "internship application is completed"');
+    } catch (error) {
+        console.error('Error processing application SSI upload created message:', error);
+        throw new Error('Error processing SSI created message:');
+    }
+}
+
+async function processDepartmentSecrataryuploadSSI(message){
+    
+    const content = JSON.parse(message.content.toString());
+    try{
+        //emitMessage('application letter create', JSON.stringify(content));
+        const correlationId = generateUuid();
+        emitMessageCorrelationId('create SSI document',  JSON.stringify(content),  correlationId);    
+        const response = await waitForResponse(correlationId);
+        
+        if (response.includes('SSI document created')) {
+            await processSSIDocumentCreated(message);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'SSI document created', stat: 200}), message.properties.correlationId);
+        }else{
+            throw new Error('SSI document not created');
+        }
+        //emitMessage('success', JSON.stringify({ message: 'Application Letter is Sent' }));
+        
+    } catch (error) {
+        if (error instanceof Sequelize.UniqueConstraintError) {
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Duplicate entry: email must be unique' , stat : 400}), message.properties.correlationId);
+            
+        } else {
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Internal server error' , stat : 400}), message.properties.correlationId);
+        }
     }
 }
 

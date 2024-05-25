@@ -2,13 +2,15 @@ const amqp = require('amqplib/callback_api');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+const multer = require('multer');
 const app = express();
 app.use(bodyParser.json());
+const path = require('path');
 const rabbitMQUrl = 'amqp://localhost';
 let channel;
 let queue;
-
+const fs = require('fs');
+const { Console } = require('console');
 // Store response handlers for pending RPC calls
 const responseHandlers = {};
 
@@ -214,6 +216,23 @@ app.get('/applicationLetter', async (req, res) => {
         res.status(400).json(value);}
 });
 
+app.get('/getSSI', async (req, res) => {
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/getSSI', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    const filePath = path.normalize(response);
+    res.download(removeQuotes(filePath));
+    
+});
+function removeQuotes(str) {
+    return str.replace(/['"]/g, '');
+}
+
+function convertBackslashesToSlashes(filePath) {
+    return filePath.replace(/\\/g, '/');
+}
 app.get('/student/status', async (req, res) => {
     const content = req.body;
     const msg = JSON.stringify(content);
@@ -338,6 +357,42 @@ async function handleError(msg) {
     return 1;
 }
 
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+app.post('/departmentSecratary/uploadSSI', upload.single('file'), async (req, res) => {
+    const file = (req.file);
+    const filePath = file.path;
+    
+    const jsonPayload =(req.query);
+
+    console.log(jsonPayload);
+    if (!file) {
+        return res.status(400).send('No file uploaded.');
+    }
+
+    const payload = {
+        file,
+        jsonPayload
+    };
+    
+    const msg = JSON.stringify(payload);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/departmentSecratary/uploadSSI', msg, correlationId);
+
+    try {
+        const response = await waitForResponse(correlationId);
+        const value = JSON.parse(response);
+        if (value.stat === 200) {
+            res.status(200).json(value.message);
+        } else {
+            res.status(400).json(value.message);
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Error processing request' });
+    }
+});
 
 
 // Start the Express server
