@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar";
 import {main_config} from "../config";
 import user_icon from "../assets/user.png";
 
+
 function MainPage({ children }) {
     const { user } = useUser();
 

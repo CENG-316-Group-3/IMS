@@ -8,7 +8,7 @@ const cors = require('cors');
 const sequelize = require('./utils/db');
 // confing env
 const path = './config.env'
-require('dotenv').config({path:path});
+require('dotenv').config({ path: path });
 
 
 // initialize app
@@ -16,10 +16,10 @@ const app = express();
 
 
 const corsOptions = {
-    origin: 'http://localhost:3001', // Sadece React uygulamasının URL'si
+    origin: 'http://localhost:5173', // Sadece React uygulamasının URL'si
     optionsSuccessStatus: 200, // İsteğin başarı durumu
     credentials: true, // Kimlik bilgilerini kabul et
-  };
+};
 
 app.use(cors(corsOptions)); // CORS ayarlarını kullan
 
@@ -44,18 +44,18 @@ const secretariatRouter = require('./routes/secretariat-route');
 
 
 
-app.use('/ims/auth-service/api',authRouter);
+app.use('/ims/auth-service/api', authRouter);
 app.use('/ims/auth-service/api/coordinator', coordinatorRouter);
 app.use('/ims/auth-service/api/company', companyRouter);
 app.use('/ims/auth-service/api/secretariat', secretariatRouter);
 
 // cookie token test
 const { authenticate } = require('./middleware/authenticate');
-app.use('/ims/auth-service/api/test',authenticate,async(req,res) =>{
+app.use('/ims/auth-service/api/test', authenticate, async (req, res) => {
     //console.log(req.user);
     res.json({
-        access:true,
-        
+        access: true,
+
     });
 })
 
@@ -79,4 +79,4 @@ sequelize
         app.listen(process.env.PORT);
         console.log(process.env.PORT)
     })
-    .catch(err => console.log(err,'error handle'));
+    .catch(err => console.log(err, 'error handle'));
