@@ -5,19 +5,7 @@ import "../../styles/StudentApplicationsList.css";
 const ITEMS_PER_PAGE = 6;
 
 function CoordinatorViewStdApplicationsList() {
-    const [file, setFile] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-
-    const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
-    };
-
-    const handleSave = (e) => {
-        e.preventDefault();
-        setFile(e.target.files[0]);
-        // Form submission logic here
-        console.log({ file });
-    };
 
     const applications = [
         { id: 1, company_name: 'Company A', date: '2024-05-21', student_name: 'Student 1', application_status: 'Application Letter' },
