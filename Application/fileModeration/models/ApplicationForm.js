@@ -1,6 +1,7 @@
 const { DataTypes} = require('sequelize');
 const sequelize = require('../utils/db');
 const Students = require('./Students.js');
+const { FORCE } = require('sequelize/lib/index-hints');
 
 const ApplicationForm = sequelize.define('ApplicationForm',{
    
@@ -59,7 +60,8 @@ const ApplicationForm = sequelize.define('ApplicationForm',{
 });
 
 
-ApplicationForm.belongsTo(Students, { foreignKey: 'studentMail' });
+ApplicationForm.hasOne(Students, { foreignKey: 'studentMail' });
+
 Students.hasMany(ApplicationForm, { foreignKey: 'studentMail' });
 
 

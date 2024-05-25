@@ -88,7 +88,7 @@ async function processApplicationLetter(message) {
 
         if (!student) {
             console.error('Student not found:', studentMail);
-            return;
+            throw new Error('Student not found:');
         }
 
         // Create a new ApplicationLetter entry combining message content and student details
@@ -130,7 +130,7 @@ async function processApplicationFormAccept(message) {
 
         if (!applicationForm) {
             console.error('Application form not found:', studentMail, announcementId, companyMail);
-            return;
+            throw new Error('Application form not found:');
         }
 
         // Update the ApplicationForm entry with new values
@@ -164,7 +164,7 @@ async function processApplicationForm(message) {
 
         if (!student) {
             console.error('Student not found:', studentMail);
-            return;
+            throw new Error("Application form not found");
         }
 
         // Create a new ApplicationForm entry combining message content and student details
@@ -202,7 +202,7 @@ async function processApplicationForm(message) {
 app.post('/pushStudent', async(req, res) => {
     const content = req.body;
     try{
-    await Students.create({
+    const student = await Students.create({
         studentMail: content.studentMail,
         studentNumber: content.studentNumber,
         firstName:content.firstName,
@@ -213,12 +213,12 @@ app.post('/pushStudent', async(req, res) => {
         NationalIdentityNumber: content.NationalIdentityNumber,
         Telephone: content.Telephone
     });
-    res.status(201).json(user);
+    res.status(200).json(student);
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
-            res.status(409).json({ message: 'Duplicate entry: email must be unique' });
+            res.status(400).json({ message: 'Duplicate entry ' });
         } else {
-            res.status(500).json({ message: 'Internal server error', error: error.message });
+            res.status(400).json({ message: 'Internal server error', error: error.message });
         }
     }
 });
@@ -231,7 +231,7 @@ async function processGetApplicationLetter(message){
 
         // Validate that all required query parameters are provided
         if (!companyMail || !announcementId || !studentMail) {
-            emitMessage('error', JSON.stringify({ message: 'Missing required query parameters', status : 400 }));
+            emitMessage('error', JSON.stringify({ message: 'Missing required query parameters', stat : 400 }));
         }
 
         // Find the application letter and include the related student information
@@ -249,7 +249,7 @@ async function processGetApplicationLetter(message){
 
         // Check if the application letter was found
         if (!applicationLetter) {
-            emitMessage('error', JSON.stringify({ message:  'Application letter not found', status: 400 }));
+            emitMessage('error', JSON.stringify({ message:  'Application letter not found', stat: 400 }));
         }
         // Return the application letter and student information as a JSON response
 
@@ -283,7 +283,7 @@ function waitForResponse(correlationId) {
 
 function addStatus(obj, status) {
     const newObj = obj.toJSON();
-    newObj.status = status;
+    newObj.stat = status;
     return newObj;
 }
 
@@ -338,7 +338,7 @@ async function processGetApplicationForm(message){
 
         // Validate that all required query parameters are provided
         if (!companyMail || !announcementId || !studentMail) {
-            emitMessageCorrelationId('success',JSON.stringify({ message: 'Missing required query parameters', status : 400 }), message.properties.correlationId);
+            emitMessageCorrelationId('success',JSON.stringify({ message: 'Missing required query parameters', stat : 400 }), message.properties.correlationId);
         }
 
         // Find the application letter and include the related student information
@@ -356,7 +356,7 @@ async function processGetApplicationForm(message){
 
         // Check if the application letter was found
         if (!applicationForm) {
-            emitMessageCorrelationId('success',JSON.stringify({ message:  'Application letter not found',status : 400 }), message.properties.correlationId);
+            emitMessageCorrelationId('success',JSON.stringify({ message:  'Application letter not found',stat : 400 }), message.properties.correlationId);
         }
         // Return the application letter and student information as a JSON response
 
@@ -366,7 +366,7 @@ async function processGetApplicationForm(message){
     } catch (error) {
         console.error('Error retrieving application letter:', error);
         // Return a 500 Internal Server Error response in case of an error
-        emitMessageCorrelationId('success',JSON.stringify({ message:'application form found not found', status : 400 }), message.properties.correlationId);
+        emitMessageCorrelationId('success',JSON.stringify({ message:'application form found not found', stat : 400 }), message.properties.correlationId);
         //emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
     }
 }
@@ -506,6 +506,7 @@ async function deleteStudent(studentMail, announcementId, companyMail, table) {
 
         if (result === 0) {
             console.log('Application not found or no deletion occurred');
+            throw new Error('Application not found or no deletion occurred');
             return false;
         } else {
             console.log('Application deleted successfully');
@@ -513,7 +514,7 @@ async function deleteStudent(studentMail, announcementId, companyMail, table) {
         }
     } catch (error) {
         console.error('Error deleting application:', error);
-        return false;
+   
     }
 }
 

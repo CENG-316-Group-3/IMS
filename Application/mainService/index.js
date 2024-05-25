@@ -26,7 +26,8 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
         const queueName = 'applicationQueue1';
         const routingKeys = ['application letter created', 'application form created','/student/applyToInternship','/student/sendApplicationForm','/company/acceptApplicationLetter', 
         '/company/rejectApplicationLetter', '/company/rejectApplicationForm', '/summerPractiseCoordinator/rejectApplicationForm','/company/acceptApplicationForm', '/summerPractiseCoordinator/acceptApplicationForm'
-        ,'application form accepted', '/student/status', '/sendFeedback', '/student/cancelApplication', '/student/cancelApplicationForm','application canceled','application form canceled' , '/summerPracticeCoordinator/deleteApplication'];
+        ,'application form accepted', '/student/status', '/sendFeedback', '/student/cancelApplication', '/student/cancelApplicationForm','application canceled','application form canceled' , '/summerPracticeCoordinator/deleteApplication', '/company/getApplicationsById'
+    , '/company/getApplications'];
         // Declare the Direct Exchange
         channel.assertExchange(exchange, 'direct', { durable: false });
         channel.assertQueue(queueName, { exclusive: true }, function(error2, q) {
@@ -76,6 +77,10 @@ amqp.connect(rabbitMQUrl, function(error0, connection) {
                     processCancelApplicationForm(message);
                 }else if  (message.fields.routingKey ==="/summerPracticeCoordinator/deleteApplication"){
                     processSummerPracticeCoordinatorDeleteApplication(message);
+                }else if  (message.fields.routingKey ==='/company/getApplicationsById'){
+                    processCommpanygetApplicationsById(message);
+                }else if  (message.fields.routingKey === '/company/getApplications'){
+                    processGetAllByAnnoucnement(message);
                 }
                 if (responseHandlers[correlationId]) {
                     responseHandlers[correlationId](content);
@@ -187,7 +192,7 @@ async function processStudentApplyToInternship(message){
         
         if (response.includes('application letter created')) {
             await processApplicationLetterCreated(message);
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application Letter is Sent', status: 200}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application Letter is Sent', stat: 200}), message.properties.correlationId);
         }else{
             throw new Error('Application letter not created');
         }
@@ -195,10 +200,10 @@ async function processStudentApplyToInternship(message){
         
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Duplicate entry: email must be unique' , status : 400}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Duplicate entry: email must be unique' , stat : 400}), message.properties.correlationId);
             
         } else {
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Internal server error' , status : 400}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Internal server error' , stat : 400}), message.properties.correlationId);
         }
     }
 }
@@ -228,7 +233,7 @@ app.post('/student/applyToInternship', async(req, res) => {
 });
 */
 async function processStudentSendApplicationForm(message){
-    
+
     const content = JSON.parse(message.content.toString());
     //const content = JSON.parse(message);
     try{
@@ -239,15 +244,15 @@ async function processStudentSendApplicationForm(message){
        
         if (response.includes('application form created')) {
             await processApplicationFormCreated(message);
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application Form is Sent' , status : 200}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application Form is Sent' , stat : 200}), message.properties.correlationId);
         }else{
             throw new Error('Application form not created');
         }
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status' ,status : 400}), message.properties.correlationId);         
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status' ,stat : 400}), message.properties.correlationId);         
         }else {
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application letter is not sent or accepted',status : 400}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application letter is not sent or accepted',stat : 400}), message.properties.correlationId);
         }
     }
 }
@@ -270,9 +275,9 @@ async function processCompanyAcceptApplicationLetter(message){
     try {
         //emitMessage('success', JSON.stringify({ message: 'application letter is accepted' }));
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application letter is accepted', "", 'application letter created');
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application accepted by company' ,status : 200}),  message.properties.correlationId);    
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application accepted by company' ,stat : 200}),  message.properties.correlationId);    
     } catch (error) {
-        emitMessageCorrelationId('success', JSON.stringify({ message: 'Error accepting Applicaton Letter ',status : 400}), message.properties.correlationId);
+        emitMessageCorrelationId('success', JSON.stringify({ message: 'Error accepting Applicaton Letter ',stat : 400}), message.properties.correlationId);
     }
 }
 /*
@@ -292,9 +297,9 @@ async function processCompanyRejectApplicationLetter(message){
     const { studentMail, announcementId, companyMail, content} = JSON.parse(message.content.toString());
     try {
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application letter is rejected', content, 'application letter created');
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application letter is rejected', status : 200 }),  message.properties.correlationId);    
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application letter is rejected', stat : 200 }),  message.properties.correlationId);    
     } catch (error) {   
-        emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status', status : 400 }), message.properties.correlationId);
+        emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status', stat : 400 }), message.properties.correlationId);
     }
 }
 /*
@@ -312,10 +317,10 @@ async function processCompanyRejectApplicationForm(message){
     const { studentMail, announcementId, companyMail, content} = JSON.parse(message.content.toString());
     try {
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application form is rejected by company', content, 'application form is created');
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application form is rejected by company', status :200 }),  message.properties.correlationId);   
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application form is rejected by company', stat :200 }),  message.properties.correlationId);   
         //emitMessage('success', JSON.stringify({ message: 'application form is rejected by company' }));
     } catch (error) {
-        emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status', status : 400 }), message.properties.correlationId);
+        emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status', stat : 400 }), message.properties.correlationId);
         //emitMessage('error', JSON.stringify({ message: 'Error updating application status' }));
     }
 }
@@ -335,10 +340,10 @@ async function processSummerPractiseCoordinatorRejectApplicationForm(message){
     const { studentMail, announcementId, companyMail, content} = JSON.parse(message.content.toString());
     try {
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application form is rejected by summer practise coordinator', content, 'application form is accepted by company');
-        emitMessageCorrelationId('success',  JSON.stringify({ message:  'application form rejected by summer practise coordinator', status : 200}),  message.properties.correlationId);   
+        emitMessageCorrelationId('success',  JSON.stringify({ message:  'application form rejected by summer practise coordinator', stat : 200}),  message.properties.correlationId);   
         //emitMessage('success', JSON.stringify({ message: 'application form rejected by summer practise coordinator' }));
     } catch (error) {
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'Error updating application status' ,status : 400}),  message.properties.correlationId);   
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'Error updating application status' ,stat : 400}),  message.properties.correlationId);   
     }
 }
 
@@ -364,13 +369,13 @@ async function processCompanyAcceptApplicationForm(message){
         
         if (respons.includes('application form accepted')) {
             await updateApplicationStatus(content.studentMail, content.announcementId, content.companyMail, 'application form is accepted by company', '', 'application form is created');
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'application form filled by company', status : 200}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'application form filled by company', stat : 200}), message.properties.correlationId);
         }
         
         
         
     } catch (error) {
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'Error updating application status',  status : 400}),  message.properties.correlationId);   
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'Error updating application status',  stat : 400}),  message.properties.correlationId);   
     }
 }
 
@@ -392,9 +397,9 @@ async function processSummerPractiseCoordinatorAcceptApplicationForm(message){
     const { studentMail, announcementId, companyMail, content} = JSON.parse(message.content.toString());
     try {
         await updateApplicationStatus(studentMail, announcementId, companyMail, 'application form is accepted by summer practise coordinator', content, 'application form is accepted by company');
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application form is accepted by summerPractiseCoordinator', status : 200}),  message.properties.correlationId);   
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'application form is accepted by summerPractiseCoordinator', stat : 200}),  message.properties.correlationId);   
     } catch (error) {
-        emitMessageCorrelationId('success',  JSON.stringify({ message: 'Error updating application status' ,status : 400 }),  message.properties.correlationId);   
+        emitMessageCorrelationId('success',  JSON.stringify({ message: 'Error updating application status' ,stat : 400 }),  message.properties.correlationId);   
     }
 }
 /*
@@ -434,14 +439,14 @@ async function processGetStudentStatusById(message){
     }catch (error) {
         console.error('Error retrieving application:', error);
         // Return a 500 Internal Server Error response in case of an error
-        emitMessageCorrelationId('success',JSON.stringify({ message: 'application form is accepted by summerPractiseCoordinator' , status : 400}), message.properties.correlationId);
+        emitMessageCorrelationId('success',JSON.stringify({ message: 'application form is accepted by summerPractiseCoordinator' , stat : 400}), message.properties.correlationId);
         //emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
     }
 }
 
 function addStatus(obj, status) {
     const newObj = obj.toJSON();
-    newObj.status = status;
+    newObj.stat = status;
     return newObj;
 }
 
@@ -460,7 +465,7 @@ async function processSendFeedBack(message) {
 
         if (!application) {
             console.log('Application not found');
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application not found', status : 400 }), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application not found', stat : 400 }), message.properties.correlationId);
             return;
         }
     
@@ -476,7 +481,7 @@ async function processSendFeedBack(message) {
         const allowedStatuses = ['application letter created', 'application form created', 'application form is accepted by company'];
         if (!allowedStatuses.includes(application.status)) {
             console.log('Current status does not allow this update');
-            emitMessageCorrelationId('success',JSON.stringify({ message: 'Current status does not allow this update', status : 400 }), message.properties.correlationId);
+            emitMessageCorrelationId('success',JSON.stringify({ message: 'Current status does not allow this update', stat : 400 }), message.properties.correlationId);
             return;
         }
 
@@ -498,14 +503,14 @@ async function processSendFeedBack(message) {
 
         if (result[0] === 0) {
             console.log('No changes made to the application');
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'No changes made to the application' , status : 400}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'No changes made to the application' , stat : 400}), message.properties.correlationId);
         } else {
             console.log('Application status updated successfully');
-            emitMessageCorrelationId('success', JSON.stringify({ message: ' feedback send successfully',status : 200 }), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: ' feedback send successfully',stat : 200 }), message.properties.correlationId);
         }
     } catch (error) {
         console.error('Error updating application status:', error);
-        emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status', status : 400 }), message.properties.correlationId);
+        emitMessageCorrelationId('success', JSON.stringify({ message: 'Error updating application status', stat : 400 }), message.properties.correlationId);
     }
 }
 async function processCancelApplication(message){
@@ -522,7 +527,7 @@ async function processCancelApplication(message){
 
         if (!application) {
             console.log('Application not found');
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application not found' , status : 400}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application not found' , stat : 400}), message.properties.correlationId);
             throw new Error ('Application not found');
         }
         
@@ -536,9 +541,9 @@ async function processCancelApplication(message){
         const response = await waitForResponse(correlationId);
         console.log("\n\n\n");
         console.log(response);
+        deleteStudent(content.studentMail, content.announcementId, content.companyMail);
         if (response.includes('Application canceled')) {
-            deleteStudent(content.studentMail, content.announcementId, content.companyMail);
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application canceled',  status : 200 }), message.properties.correlationId);
+             emitMessageCorrelationId('success', JSON.stringify({ message: 'Application canceled',  stat : 200 }), message.properties.correlationId);
 
         }else{
             throw new Error('Application letter created');
@@ -550,7 +555,7 @@ async function processCancelApplication(message){
             emitMessageCorrelationId('success', JSON.stringify({ message: 'Duplicate entry: email must be unique' , status : 400}), message.properties.correlationId);
             
         } else {
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Internal server error', status : 400 }), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Internal server error', stat : 400 }), message.properties.correlationId);
         }
     }
 }
@@ -593,13 +598,13 @@ async function processCancelApplicationForm(message){
 
         if (!application) {
             console.log('Application not found');
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application not found', status : 400 }), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application not found', stat : 400 }), message.properties.correlationId);
             throw new Error ('Application not found');
         }
         const allowedStatuses = ['application form is created', 'application form is accepted by company', 'application form is rejected by company','application form is rejected by summer practise coordinator'];
         if (!allowedStatuses.includes(application.status)) {
             console.log('Current status does not allow this update');
-            emitMessageCorrelationId('success',JSON.stringify({ message: 'Current status does not allow this update', status : 400 }), message.properties.correlationId);
+            emitMessageCorrelationId('success',JSON.stringify({ message: 'Current status does not allow this update', stat : 400 }), message.properties.correlationId);
             return;
         };
        
@@ -622,7 +627,7 @@ async function processCancelApplicationForm(message){
                     }
                 }
             );
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application form canceled', status: 200}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application form canceled', stat: 200}), message.properties.correlationId);
 
         }else{
             throw new Error('Application form error');
@@ -631,11 +636,68 @@ async function processCancelApplicationForm(message){
         
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Duplicate entry: email must be unique', status :400 }), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Duplicate entry: email must be unique', stat :400 }), message.properties.correlationId);
             
         } else {
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Internal server error', status :400  }), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Internal server error', stat :400  }), message.properties.correlationId);
         }
+    }
+}
+
+async function  processGetAllByAnnoucnement(message){
+    const {companyMail} = JSON.parse(message.content.toString());
+    try {
+        if (!companyMail  ) {
+            emitMessageCorrelationId('success',{ message: 'Missing required query parameters' }, message.properties.correlationId);
+        }
+
+        // Find the application letter and include the related student information
+        console.log(JSON.parse(message.content.toString()));
+        const applications = await applicationTable.findAll({
+            where: {
+                companyMail,
+            }
+        });
+        console.log(applications);
+        // Check if the application letter was found
+        if (!applications) {
+            emitMessageCorrelationId('success',JSON.stringify({ message:  'Application not found' }, message.properties.correlationId));
+        }
+        emitMessageCorrelationId('success',JSON.stringify( {applications, stat : 200}), message.properties.correlationId);
+    }catch (error) {
+        console.error('Error retrieving application:', error);
+        // Return a 500 Internal Server Error response in case of an error
+        emitMessageCorrelationId('success',JSON.stringify({ message: 'application form is accepted by summerPractiseCoordinator' , stat : 400}), message.properties.correlationId);
+        //emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
+    }
+}
+
+async function  processCommpanygetApplicationsById(message){
+    const { announcementId,companyMail} = JSON.parse(message.content.toString());
+    try {
+        if (!companyMail || !announcementId ) {
+            emitMessageCorrelationId('success',{ message: 'Missing required query parameters' }, message.properties.correlationId);
+        }
+
+        // Find the application letter and include the related student information
+        console.log(JSON.parse(message.content.toString()));
+        const applications = await applicationTable.findAll({
+            where: {
+                companyMail,
+                announcementId,
+            }
+        });
+        console.log(applications);
+        // Check if the application letter was found
+        if (!applications) {
+            emitMessageCorrelationId('success',JSON.stringify({ message:  'Application not found' }, message.properties.correlationId));
+        }
+        emitMessageCorrelationId('success',JSON.stringify( {applications, stat : 200}), message.properties.correlationId);
+    }catch (error) {
+        console.error('Error retrieving application:', error);
+        // Return a 500 Internal Server Error response in case of an error
+        emitMessageCorrelationId('success',JSON.stringify({ message: 'application form is accepted by summerPractiseCoordinator' , stat : 400}), message.properties.correlationId);
+        //emitMessage('error', JSON.stringify({ message:  'Internal server error'}));
     }
 }
 
@@ -653,7 +715,7 @@ async function processSummerPracticeCoordinatorDeleteApplication(message){
 
         if (!application) {
             console.log('Application not found');
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application not found' , status : 400}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application not found' , stat : 400}), message.properties.correlationId);
             throw new Error ('Application not found');
         }
         
@@ -661,12 +723,9 @@ async function processSummerPracticeCoordinatorDeleteApplication(message){
         const correlationId = generateUuid();
         emitMessageCorrelationId('cancel application',  JSON.stringify(content),  correlationId);    
         const response = await waitForResponse(correlationId);
-        console.log("\n\n\n");
-        console.log(response);
+        deleteStudent(content.studentMail, content.announcementId, content.companyMail);
         if (response.includes('Application canceled')) {
-            deleteStudent(content.studentMail, content.announcementId, content.companyMail);
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application canceled',  status : 200 }), message.properties.correlationId);
-
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Application canceled',  stat : 200 }), message.properties.correlationId);
         }else{
             throw new Error('Application letter created');
         }
@@ -674,10 +733,10 @@ async function processSummerPracticeCoordinatorDeleteApplication(message){
         
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Duplicate entry: email must be unique' , status : 400}), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Duplicate entry: email must be unique' , stat : 400}), message.properties.correlationId);
             
         } else {
-            emitMessageCorrelationId('success', JSON.stringify({ message: 'Internal server error', status : 400 }), message.properties.correlationId);
+            emitMessageCorrelationId('success', JSON.stringify({ message: 'Internal server error', stat : 400 }), message.properties.correlationId);
         }
     }
 }

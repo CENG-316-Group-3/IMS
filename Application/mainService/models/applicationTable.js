@@ -7,19 +7,24 @@ const applicationTable = sequelize.define('applicationTable',{
     studentMail:{
         primaryKey:true, 
         type:DataTypes.STRING,
+        allowNull:false
+    
        
     },
 
     companyMail:{
         primaryKey:true,
         type:DataTypes.STRING,
-        allowNull:false,
+        allowNull:false
+     
 
     },
     announcementId:{
         primaryKey:true,
         type:DataTypes.INTEGER,
-        allowNull:false,
+        allowNull:false
+    
+       
         
     },
     status:{ 

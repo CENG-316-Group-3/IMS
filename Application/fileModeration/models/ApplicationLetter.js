@@ -6,25 +6,24 @@ const ApplicationLetter = sequelize.define('ApplicationLetter',{
    
     companyMail:{
         type:DataTypes.STRING,
-        primaryKey: true,
         allowNull:false,
+        primaryKey: true,
     },
     announcementId:{
         type:DataTypes.INTEGER,
-        primaryKey: true,
         allowNull:false,
+        primaryKey: true,
     },
     studentMail:{ 
         type:DataTypes.STRING,
-        primaryKey: true,
         allowNull:false, 
+        primaryKey: true,
         
-    },
-    
+    }
 });
 
 
-ApplicationLetter.belongsTo(Students, { foreignKey: 'studentMail' });
+ApplicationLetter.hasOne(Students, { foreignKey: 'studentMail' });
 Students.hasMany(ApplicationLetter, { foreignKey: 'studentMail' });
 
 

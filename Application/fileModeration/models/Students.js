@@ -51,5 +51,5 @@ const Students = sequelize.define('Students',{
 });
 
 
-Students.sync({})
+Students.sync({FORCE : true})
 module.exports = Students;

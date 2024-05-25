@@ -87,7 +87,7 @@ app.post('/student/applyToInternship', async(req, res) => { // to send applicati
    
   
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);
@@ -101,7 +101,7 @@ app.post('/student/sendApplicationForm', async(req, res) => {
     emitMessageCorrelationId('/student/sendApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -117,7 +117,7 @@ app.put('/company/acceptApplicationLetter', async(req, res) => {
     //res.send('Application letter is accepted by company');
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -131,7 +131,7 @@ app.put('/company/rejectApplicationLetter', async(req, res) => {
     emitMessageCorrelationId('/company/rejectApplicationLetter', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -145,7 +145,7 @@ app.put('/company/rejectApplicationForm', async(req, res) => {
     emitMessageCorrelationId('/company/rejectApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -161,7 +161,7 @@ app.put('/summerPractiseCoordinator/rejectApplicationForm', async(req, res) => {
     emitMessageCorrelationId('/summerPractiseCoordinator/rejectApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -176,7 +176,7 @@ app.put('/company/acceptApplicationForm', async(req, res) => {
     emitMessageCorrelationId('/company/acceptApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -191,7 +191,7 @@ app.put('/summerPractiseCoordinator/acceptApplicationForm', async(req, res) => {
     emitMessageCorrelationId('/summerPractiseCoordinator/acceptApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -202,13 +202,13 @@ app.put('/summerPractiseCoordinator/acceptApplicationForm', async(req, res) => {
 
 // Handle GET request for application letter
 app.get('/applicationLetter', async (req, res) => {
-    const content = req.query;
+    const content = req.body;
     const msg = JSON.stringify(content);
     const correlationId = generateUuid();
     emitMessageCorrelationId('/applicationLetter', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value);
     }else{
         res.status(400).json(value);}
@@ -221,20 +221,46 @@ app.get('/student/status', async (req, res) => {
     emitMessageCorrelationId('/student/status', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
+        res.status(200).json(value);
+    }else{
+        res.status(400).json(value);}
+});
+
+app.get('/company/getApplicationsById', async (req, res) => {
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/company/getApplicationsById', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    value = JSON.parse(response);
+    if (value.stat === 200){
+        res.status(200).json(value);
+    }else{
+        res.status(400).json(value);}
+});
+
+app.get('/company/getApplications', async (req, res) => {
+    const content = req.body;
+    const msg = JSON.stringify(content);
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('/company/getApplications', msg, correlationId);
+    const response = await waitForResponse(correlationId);
+    value = JSON.parse(response);
+    if (value.stat === 200){
         res.status(200).json(value);
     }else{
         res.status(400).json(value);}
 });
 
 app.get('/applicationForm', async (req, res) => {
-    const content = req.query;
+    const content = req.body;
     const msg = JSON.stringify(content);
     const correlationId = generateUuid();
     emitMessageCorrelationId('/applicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value);
     }else{
         res.status(400).json(value);}
@@ -248,7 +274,7 @@ app.post('/sendFeedback', async(req, res) => {
     emitMessageCorrelationId('/sendFeedback', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -261,7 +287,7 @@ app.put('/student/cancelApplication', async(req, res) => {
     emitMessageCorrelationId('/student/cancelApplication', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -275,7 +301,7 @@ app.put('/student/cancelApplicationForm', async(req, res) => {
     emitMessageCorrelationId('/student/cancelApplicationForm', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
@@ -291,7 +317,7 @@ app.put('/summerPracticeCoordinator/deleteApplication', async(req, res) => {
     emitMessageCorrelationId('/summerPracticeCoordinator/deleteApplication', msg, correlationId);
     const response = await waitForResponse(correlationId);
     value = JSON.parse(response);
-    if (value.status === 200){
+    if (value.stat === 200){
         res.status(200).json(value.message);
     }else{
         res.status(400).json(value.message);}
