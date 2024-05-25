@@ -2,12 +2,12 @@ const amqp = require('amqplib/callback_api');
 const AnnouncementController = require('./controllers/announcement_controller'); // Adjust the path as needed
 
 const rabbitMQUrl = 'amqp://localhost'; // Replace with your RabbitMQ URL
-
 const startRabbitMQConsumer = () => {
     amqp.connect(rabbitMQUrl, function(error0, connection) {
         if (error0) throw error0;
 
         connection.createChannel(function(error1, channel) {
+            
             if (error1) throw error1;
 
             const exchange = 'direct_logs';
