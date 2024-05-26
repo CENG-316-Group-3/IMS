@@ -2,7 +2,7 @@ const express = require('express');
 const { databaseConnection } = require('./database_connection.js');
 const bodyParser = require('body-parser');
 //const announcementApi = require("./announcement_api.js");
-const RabbitMQ = require("./rabbitmq.js");
+const startRabbitMQConsumer = require("./rabbitmq.js");
 
 const StartServer = async () => {
   //const app = express();
@@ -27,7 +27,7 @@ const StartServer = async () => {
     process.exit(1);
   });*/
 
-  RabbitMQ();
+  startRabbitMQConsumer();
 };
 
 StartServer();

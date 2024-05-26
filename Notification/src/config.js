@@ -2,11 +2,10 @@
 module.exports = {
     development: {
       username: 'root',
-      password: 'your_root_password',
+      password: '0000',
       database: 'notification',
-      host: 'localhost',
-      dialect: 'mysql',
-      port: 3307,
+      host: '127.0.0.1',
+      dialect: 'mysql'
     },
     test: {
       username: 'root',

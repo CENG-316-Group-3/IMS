@@ -2,12 +2,12 @@ const amqp = require('amqplib/callback_api');
 const AnnouncementController = require('./controllers/announcement_controller'); // Adjust the path as needed
 
 const rabbitMQUrl = 'amqp://localhost'; // Replace with your RabbitMQ URL
-
 const startRabbitMQConsumer = () => {
     amqp.connect(rabbitMQUrl, function(error0, connection) {
         if (error0) throw error0;
 
         connection.createChannel(function(error1, channel) {
+            
             if (error1) throw error1;
 
             const exchange = 'direct_logs';
@@ -79,7 +79,7 @@ const startRabbitMQConsumer = () => {
                             case 'admin.internship-announcements.get':
                                 await AnnouncementController.getAnnouncementById(msgContent, channel, message);
                                 break;
-                            case 'admin.internship-announcements.get':
+                            case 'admin.internship-announcements.delete':
                                 await AnnouncementController.deleteInternshipAnnouncement(msgContent, channel, message);
                                 break;
                             case 'admin.waiting-announcements.approve':
