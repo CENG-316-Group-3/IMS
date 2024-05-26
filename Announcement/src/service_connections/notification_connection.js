@@ -79,13 +79,19 @@ send_notification = async (msgContent)=> {
     //res.status(parsedResponse.status).send(parsedResponse.message);
 }
 
+send_mail = async (msgContent)=> {
+    const correlationId = generateUuid();
+    emitMessageCorrelationId('notification.send_mail', JSON.stringify(msgContent), correlationId);
+    const response = await waitForResponse(correlationId);
+    const parsedResponse = JSON.parse(response);
+    //res.status(parsedResponse.status).send(parsedResponse.message);
+}
+
 exports.sendApproveAnnouncementNotification = async(msgContent)=> {
     const announcement = await AnnouncementRepository.getAnnouncementById(msgContent.id);
     const announcement_data = announcement[0].dataValues;
     const notification_type = "Announcement Approvation";  
     const title = `Your request is accepted for ${announcement_data.title}` ;
-    console.log("küçük ünal");
-    console.log(msgContent);
     const updatedMsgContent = { 
         ...msgContent, 
         receiver_mail: announcement_data.user_mail, 
@@ -97,9 +103,7 @@ exports.sendApproveAnnouncementNotification = async(msgContent)=> {
 }
 
 exports.sendRejectAnnouncementNotification = async(msgContent)=> {
-    const announcement = await AnnouncementRepository.getAnnouncementById(msgContent.id);
-    console.log("küçük eşek");
-    console.log(announcement);
+    const announcement = await AnnouncementRepository.getAnnouncementById(msgContent.id); 
     const announcement_data = announcement[0].dataValues;
     const notification_type = "Announcement Rejection";  
     const title = `Your request is rejected for ${announcement_data.title}` ;
@@ -114,6 +118,25 @@ exports.sendRejectAnnouncementNotification = async(msgContent)=> {
     };
     
     send_notification(updatedMsgContent);
+}
+
+
+exports.sendRejectAnnouncementNotificationMail = async(msgContent)=> {
+    const announcement = await AnnouncementRepository.getAnnouncementById(msgContent.id);
+    const announcement_data = announcement[0].dataValues;
+    const notification_type = "Announcement Rejection";  
+    const title = `Your request is rejected for ${announcement_data.title}` ;
+    console.log(msgContent.content);
+
+    const updatedMsgContent = { 
+        ...msgContent, 
+        receiver_mail: announcement_data.user_mail, 
+        notification_type: notification_type,
+        title: title,
+        content: msgContent.content
+    };
+    send_notification(updatedMsgContent);
+    send_mail(updatedMsgContent);
 }
 
 

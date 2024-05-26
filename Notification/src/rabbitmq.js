@@ -15,7 +15,8 @@ const startRabbitMQConsumer = () => {
             const routingKeys = [
                 'notification.create',//
                 'notification.list',
-                'notification.get'
+                'notification.get',
+                'notification.send_mail'
                 
             ];
 
@@ -48,6 +49,9 @@ const startRabbitMQConsumer = () => {
                             case 'notification.get':
                                 await NotificationController.getNotification(msgContent, channel, message);
                                 break;
+                            case 'notification.send_mail':
+                                await NotificationController.sendMail(msgContent, channel, message);
+                                break;
                             default:
                                 console.log(`Unknown routing key: ${routingKey}`);
                         }
@@ -56,7 +60,7 @@ const startRabbitMQConsumer = () => {
                     }
 
                     channel.ack(message);
-                }, { noAck: true });
+                }, { noAck: false });
             });
         });
     });

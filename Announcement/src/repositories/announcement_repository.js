@@ -2,9 +2,6 @@ const Announcement = require("../models/Announcement");
 const CoordinatorAnnouncement = require("../models/Coordinator_Announcement");
 
 exports.getAnnouncementById = async function(announcement_id){
-
-    console.log("repo")
-    console.log(announcement_id); // Ensure the correct model is imported
     try {
         // Fetch announcements where user_mail equals the provided userId
         const announcement = await Announcement.findAll({
@@ -23,8 +20,6 @@ exports.getAnnouncementById = async function(announcement_id){
 
 
 exports.getAnnouncementsByStatus = async function(status) {
-    console.log("repo")
-    console.log(Announcement); // Ensure the correct model is imported
     try {
         // Fetch announcements where user_mail equals the provided userId
         const announcements = await Announcement.findAll({
@@ -43,8 +38,6 @@ exports.getAnnouncementsByStatus = async function(status) {
 //Company
 
 exports.getCompanyAnnouncements = async function(userId) {
-    console.log("repo")
-    console.log(Announcement); // Ensure the correct model is imported
     try {
         // Fetch announcements where user_mail equals the provided userId
         const announcements = await Announcement.findAll({
@@ -61,8 +54,6 @@ exports.getCompanyAnnouncements = async function(userId) {
 }
 
 exports.saveInternshipAnnouncement = async function(announcementData) {
-    console.log("repo")
-    console.log(Announcement);
     try{
         await Announcement.create({
             user_mail: announcementData.user_mail,
@@ -79,8 +70,6 @@ exports.saveInternshipAnnouncement = async function(announcementData) {
 
 
 exports.updateInternshipAnnouncement = async function(announcementData) {
-    console.log("repo")
-    console.log(Announcement);
     try {
         // Check if the announcement with the same ID already exists
         const existingAnnouncement = await Announcement.findByPk(announcementData.id);
@@ -107,15 +96,12 @@ exports.updateInternshipAnnouncement = async function(announcementData) {
             });
         }
     } catch (e) {
-        console.log("repo/saveInternship");
         console.log(e);
     }
 }
 
 
 exports.deleteAnnouncementById = async function(announcement_id) {
-    console.log("repo");
-    console.log(announcement_id);
 
     try {
         // Attempt to delete the announcement with the provided ID
@@ -142,8 +128,6 @@ exports.deleteAnnouncementById = async function(announcement_id) {
 //Admin
 
 exports.getAllCompanyAnnouncements = async function(userId) {
-    console.log("repo")
-    console.log(Announcement); // Ensure the correct model is imported
     try {
         // Fetch announcements where user_mail equals the provided userId
         const announcements = await Announcement.findAll({});
@@ -156,8 +140,6 @@ exports.getAllCompanyAnnouncements = async function(userId) {
 }
 
 exports.updateAnnouncementStatus = async function(announcementId, newStatus) {
-    console.log("repo");
-    console.log(announcementId);
 
     try {
         // Find the announcement by ID
@@ -236,8 +218,6 @@ exports.deleteCoordinatorAnnouncementById = async function(announcement_id) {
 };
 
 exports.getCoordinatorAnnouncements = async function() {
-    console.log("repo")
-    console.log(Announcement); // Ensure the correct model is imported
     try {
         // Fetch announcements where user_mail equals the provided userId
         const announcements = await CoordinatorAnnouncement.findAll({});
@@ -250,8 +230,6 @@ exports.getCoordinatorAnnouncements = async function() {
 }
 
 exports.getCoordinatorAnnouncementsforCoordinator = async function(user_mail) {
-    console.log("repo")
-    console.log(Announcement); // Ensure the correct model is imported
     try {
         // Fetch announcements where user_mail equals the provided userId
         const announcements = await CoordinatorAnnouncement.findAll({
