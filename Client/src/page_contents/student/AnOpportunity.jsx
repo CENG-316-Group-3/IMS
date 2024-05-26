@@ -14,21 +14,28 @@ function AnOpportunity() {
     const [position, setPosition] = useState("");
     const [description, setDescription] = useState("");
     const [date, setDate] = useState("");
+    const [updated_date, setUpdatedDate] = useState("");
 
     useEffect(() => {
-        //fetch_data();
+        fetch_data();
     }, []);
 
     const fetch_data = async () => {
         try {
-            const response = await fetch(`//TODO//`, {
+            const response = await fetch(`http://localhost:3000/ims/student/get-announcement`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id })
             });
     
             if (response.status === 200) {
-                /* TODO with response data setStates */
+                const json_data = await response.json();
+                setCompanyName(""); // TODO
+                setCompanyEmail(json_data[0].user_mail);
+                setPosition(json_data[0].position);
+                setDescription(json_data[0].content);
+                setDate(json_data[0].createdAt);
+                setUpdatedDate(json_data[0].updatedAt);
             } else {
                 if (response.status === 400)
                     showPopup("error", "Given opportunity does not exist !");
@@ -42,6 +49,14 @@ function AnOpportunity() {
         }
     };
 
+    const download_handler = () => {
+
+    };
+
+    const apply_handler = () => {
+
+    };
+
     return (
         <div className='an_opportunity_container'>
             <h2>Internship Announcement</h2>
@@ -53,11 +68,12 @@ function AnOpportunity() {
                 <div id='company_details'>
                     <div>Company Name: {company_name}</div>
                     <div>Company Email: {company_email}</div>
-                    <div>Announcement Date: {date}</div>
                     <div>Position: {position}</div>
+                    <div>Created Date: {date}</div>
+                    <div>Last Updated: {updated_date}</div>
                 </div>
             </div>
-            <div className="an_opportunity_content_down">
+            <div>
                 <div style={{display: (description == "" ? "none": "block")}}>Description:
                     <div id='int-ann-desc-detail'>
                         {description}
@@ -65,8 +81,8 @@ function AnOpportunity() {
                 </div>
             </div>
             <div id='internship-apply-btn-div'>
-                <button className='edit-btn' id='download-file-btn'>Download File</button>
-                <button className='publish-btn'>APPLY</button>
+                <button className='edit-btn' id='download-file-btn' onClick={download_handler}>Download File</button>
+                <button className='publish-btn' onClick={apply_handler}>APPLY</button>
             </div>
         </div>
     )

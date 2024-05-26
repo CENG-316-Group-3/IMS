@@ -1,43 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from "../../contexts/UserContext";
 import { usePopup } from '../../contexts/PopUpContext';
 import { useNavigate } from 'react-router-dom';
 import EmptyContent from "../../components/EmptyContent";
 import '../../styles/Opportunities.css'
-// import garantiLogo from '../../assets/garanti_logo.png'
-// import aselsanLogo from '../../assets/aselsan_logo.png'
-
-// const o = [
-//     { id: 1, logo: garantiLogo, title: 'Internship Announcement 1', announcement_date: '24/10/2024', position: 'Front-End Developer' },
-//     { id: 2, logo: garantiLogo, title: 'Internship Announcement 2', announcement_date: '24/10/2024', position: 'Front-End Developer' },
-//     { id: 3, logo: aselsanLogo, title: 'Internship Announcement 3', announcement_date: '24/10/2024', position: 'Front-End Developer' },
-//     { id: 4, logo: aselsanLogo, title: 'Internship Announcement 4', announcement_date: '24/10/2024', position: 'Front-End Developer' },
-// ];
+import company_logo from "../../assets/buildings.png";
 
 const ITEMS_PER_PAGE = 6;
 
 function Opportunities() {
-    const { user } = useUser(); // TODO may delete //
     const { showPopup } = usePopup();
     const navigate = useNavigate();
     const [opportunities, setOpportunities] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
-        //fetch_data();
-    }, []);
+        fetch_data();
+    }, [refresh]);
 
     const fetch_data = async () => {
         try {
-            const response = await fetch(`//TODO//`, {
-                method: 'POST',
+            const response = await fetch(`http://localhost:3000/ims/student/announcement-list`, {
+                method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ /* TODO */ })
             });
     
             if (response.status === 200) {
-                /* TODO with response data setStates */
+                const json_data = await response.json();
+                setOpportunities(json_data);
             } else {
                 if (response.status === 400)
                     showPopup("error", "Bad request !");
@@ -52,7 +42,7 @@ function Opportunities() {
     };
 
     const card_handle_click = (id) => {
-        navigate(`/student_an_opportunity/:${id}`);
+        navigate(`/student_an_opportunity/${id}`);
     };
 
     const pageHandleClick = (pageNumber) => {
@@ -69,14 +59,13 @@ function Opportunities() {
     return (
         <div className="opportunities-container">
             <h2>Opportunities</h2>
-            <div className="opportunity-list" style={{display: opportunities.length == 0 ? "none" : "block"}}>
+            <div className="opportunity-list" style={{display: opportunities.length == 0 ? "none" : "flex"}}>
                 {paginatedData.map((opportunity) => (
                     <div key={opportunity.id} className="opportunity-card" onClick={() => card_handle_click(opportunity.id)}>
-                        <div className="opp-logo background_contain" style={{ backgroundImage: `url(${opportunity.logo})` }}></div>
+                        <div className="opp-logo background_contain" style={{ backgroundImage: `url(${company_logo})` }}></div>
                         <div className="opp-details">
-                            <h3>{opportunity.title}</h3>
-                            <p>{opportunity.announcement_date}</p>
-                            <p>{opportunity.position}</p>
+                            <h3>{opportunity.companyName} - {opportunity.title}</h3>
+                            <p>Position: {opportunity.position}</p>
                         </div>
                     </div>
                 ))}

@@ -23,7 +23,7 @@ function StudentProfile() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ /* TODO */ })
             });
-
+    
             if (response.status === 200) {
                 /* TODO with response data setStates */
             } else {
@@ -46,31 +46,31 @@ function StudentProfile() {
                 <div className='student-profile-left'>
 
                     <label htmlFor="">First Name:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={first_name} readOnly /><br />
+                    <input id='std-profile-input' type="text" placeholder={first_name} readOnly/><br />
 
                     <label htmlFor="">Last Name:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={last_name} readOnly /><br />
+                    <input id='std-profile-input' type="text" placeholder={last_name} readOnly/><br />
 
                     <label htmlFor="">E-mail:</label><br />
-                    <input id='std-profile-input' type="email" placeholder={user.user.studentMail} readOnly /><br />
+                    <input id='std-profile-input' type="email" placeholder={user.user.studentMail} readOnly/><br />
 
                     <label htmlFor="">Phone:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={phone} readOnly /><br />
+                    <input id='std-profile-input' type="text" placeholder={phone} readOnly/><br />
 
                 </div>
                 <div className='student-profile-right'>
 
                     <label htmlFor="">Student ID:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={number} readOnly /><br />
+                    <input id='std-profile-input' type="text" placeholder={number} readOnly/><br />
 
                     <label htmlFor="">Faculty:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={faculty} readOnly /><br />
+                    <input id='std-profile-input' type="text" placeholder={faculty} readOnly/><br />
 
                     <label htmlFor="">Department:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={department} readOnly /><br />
+                    <input id='std-profile-input' type="text" placeholder={department} readOnly/><br />
 
                     <label htmlFor="">Class:</label><br />
-                    <input id='std-profile-input' type="text" placeholder={grade} readOnly /><br />
+                    <input id='std-profile-input' type="text" placeholder={grade} readOnly/><br />
 
                 </div>
             </div>

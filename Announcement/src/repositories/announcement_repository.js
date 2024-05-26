@@ -280,3 +280,25 @@ exports.getCoordinatorAnnouncementById = async function(announcement_id){
         throw error; // Rethrow the error for error handling in the caller function
     }
 }
+
+exports.getCompanyMailByAnnouncementId = async function(announcement_id){
+    
+        try {
+          const announcement = await Announcement.findOne({
+            attributes: ['user_mail'],
+            where: {
+              id: announcement_id
+            }
+          });
+      
+          if (announcement) {
+            return announcement.user_mail;
+          } else {
+            return 'Announcement not found';
+          }
+        } catch (error) {
+          console.error('Error fetching company mail:', error);
+          throw error;
+        
+      };
+}

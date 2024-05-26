@@ -1,6 +1,8 @@
 const axios = require('axios');
 const Producer = require('./producer');
 const producer = new Producer();
+//const Consumer = require('./consumer');
+//const consumer = new Consumer();
 
 const login = async (req,res,role) =>{
     try {
@@ -10,8 +12,13 @@ const login = async (req,res,role) =>{
 
         }
         const response = await axios.post(`http://localhost:3001/ims/auth-service/api/${role}/login`,req.body);
-        if (role != "company")
+        if(role==='secretariat'){
             response.data.loggedUser[`${role}Name`] = response.data.loggedUser.firstName + ' ' + response.data.loggedUser.lastName
+        }
+        if(role==='coordinator'){
+            response.data.loggedUser[`${role}Name`] = response.data.loggedUser.firstName + ' ' + response.data.loggedUser.lastName
+        }
+       
         //console.log(response.data);
         if(role==='company'){
             if(response.data.loggedUser.status==='not approved'){
@@ -48,8 +55,11 @@ const login = async (req,res,role) =>{
 //student login
 exports.studentLogin = async(req,res) =>{
     try {
-        const response = await axios.post('http://localhost:3001/ims/auth-service/api/login',{email: req.body.studentMail, password: req.body.password});
-        response.data.loggedStudent['studentName'] = response.data.loggedStudent.firstName + ' ' + response.data.loggedStudent.lastName;
+        //console.log()
+        
+        
+        const response = await axios.post('http://localhost:3001/ims/auth-service/api/login',{email:req.body.studentMail,password:req.body.password});
+        response.data.loggedStudent['studentName'] = response.data.loggedStudent.firstName + ' ' + response.data.loggedStudent.lastName
 
         res.cookie('token',response.data.token,{httpOnly:true,secure:true});
         res.status(200).json({
@@ -154,12 +164,19 @@ exports.evaluateRegistration = async (req,res) =>{
     //body = {companyMail:mail, karar:approve}
     try {
         const message = req.body
-
+        var feedback;
         await producer.publishMessage('notApprovedCompany',message)
+        await producer.consumeMessages('registrationDecisionBack','notApprovedCompanyBack',(content)=>{
+            
+            console.log('Received message from service:', content);
+            console.log('********')
+            feedback = content
+            res.status(200).json({
+                status:'success',
+                feedback:feedback
+            });
+        })
 
-        res.status(200).json({
-            status:'success',
-        });
     } catch (error) {
         res.status(400).json({
             error:error

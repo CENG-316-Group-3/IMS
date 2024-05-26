@@ -1,33 +1,80 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react';
 import "../../styles/CompanyRegisterRequestList.css";
+import { usePopup } from '../../contexts/PopUpContext';
+import { useNavigate } from 'react-router-dom';
+import EmptyContent from "../../components/EmptyContent";
 
 const ITEMS_PER_PAGE = 6;
 
 function CompanyRegisterRequestList() {
+    const { showPopup } = usePopup();
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = React.useState(1);
+    const [requests, setRequests] = useState([]);
+    const [refresh, setRefresh] = useState(false);
 
+    useEffect(() => {
+        fetch_data();
+    }, [refresh]);
 
-
-    const requests = [
-        { id: 1, company_name: 'Company A', company_email: 'companyA@mail.com', date: '2024-05-21', company_addres: 'Urla/İzmir IYTE Teknopark' },
-        { id: 2, company_name: 'Company B', company_email: 'companyB@mail.com', date: '2024-05-22', company_addres: 'Konak/İzmir' },
-        { id: 3, company_name: 'Company C', company_email: 'companyC@mail.com', date: '2024-05-23', company_addres: 'Bornova/İzmir' },
-        { id: 4, company_name: 'Company D', company_email: 'companyD@mail.com', date: '2024-05-24', company_addres: 'Çeşme/İzmir' },
-        { id: 5, company_name: 'Company E', company_email: 'companyE@mail.com', date: '2024-05-25', company_addres: 'Karşıyaka/İzmir' },
-        { id: 6, company_name: 'Company F', company_email: 'companyF@mail.com', date: '2024-05-26', company_addres: 'Balçova/İzmir' },
-        { id: 7, company_name: 'Company G', company_email: 'companyG@mail.com', date: '2024-05-27', company_addres: 'Narlıdere/İzmir' },
-        { id: 8, company_name: 'Company H', company_email: 'companyH@mail.com', date: '2024-05-28', company_addres: 'Gaziemir/İzmir' },
-        { id: 9, company_name: 'Company I', company_email: 'companyI@mail.com', date: '2024-05-29', company_addres: 'Buca/İzmir' },
-        { id: 10, company_name: 'Company J', company_email: 'companyJ@mail.com', date: '2024-05-30', company_addres: 'Menemen/İzmir' },
-        { id: 11, company_name: 'Company K', company_email: 'companyK@mail.com', date: '2024-05-31', company_addres: 'Aliağa/İzmir' },
-        { id: 12, company_name: 'Company L', company_email: 'companyL@mail.com', date: '2024-06-01', company_addres: 'Seferihisar/İzmir' },
-        { id: 13, company_name: 'Company M', company_email: 'companyM@mail.com', date: '2024-06-02', company_addres: 'Torbalı/İzmir' }
-    ];
-
+    const fetch_data = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/ims/evaluvate-registration`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+    
+            if (response.status === 200) {
+                const json_data = await response.json();
+                setRequests( json_data.response ); // Şu json düzelt
+            } else {
+                if (response.status === 400)
+                    showPopup("error", "Given coordinator does not exist !");
+                else if (response.status === 500)
+                    showPopup("error", "Internal server error occured !");
+                navigate("/main");
+            }
+        } catch (error) {
+            showPopup("error", "There is a problem in connection");
+            navigate("/main");
+        }
+    };
 
     const handleClick = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
+
+    const approve_handler = async (request) => {
+        handler(request, "approve");
+    };
+
+    const reject_handler = async (request) => {
+        handler(request, "reject");
+    };
+
+    const handler = async (request, decision) => {
+        try {
+            const response = await fetch(`http://localhost:3000/ims/evaluvate-registration`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ companyMail: request.companyMail, decision })
+            });
+    
+            if (response.status === 200) {
+                showPopup("info", `${request.companyName} register ${decision}`);
+                setRefresh(!refresh);
+            } else {
+                if (response.status === 400)
+                    showPopup("error", "Given coordinator does not exist !");
+                else if (response.status === 500)
+                    showPopup("error", "Internal server error occured !");
+                navigate("/main");
+            }
+        } catch (error) {
+            showPopup("error", "There is a problem in connection");
+            navigate("/main");
+        }
+    }
 
     const paginatedData = requests.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
@@ -38,27 +85,29 @@ function CompanyRegisterRequestList() {
     return (
         <div className="comp-requests-container">
             <h2>Company Register Requests</h2>
-            <table>
+            <table style={{display: (requests.length == 0) ? "none" : "block"}}>
                 <thead>
                     <tr>
                         <th>Company Name</th>
                         <th>Company Email</th>
-                        <th>Date</th>
+                        <th>Created Date</th>
+                        <th>Last Updated</th>
                         <th>Adress</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {paginatedData.map((request) => (
-                        <tr key={request.id}>
-                            <td>{request.company_name}</td>
-                            <td>{request.company_email}</td>
-                            <td>{request.date}</td>
-                            <td>{request.company_addres}</td>
+                        <tr key={request.companyMail}>
+                            <td>{request.companyName}</td>
+                            <td>{request.companyMail}</td>
+                            <td>{request.createdAt}</td>
+                            <td>{request.updatedAt}</td>
+                            <td>{request.address}</td>
                             <td>
                                 <div className='req-approve-reject-btns'>
-                                    <button className="req-approve-btn" >Approve</button>
-                                    <button className="req-reject-btn" >Reject</button>
+                                    <button className="req-approve-btn" onClick={() => {approve_handler(request)}}>Approve</button>
+                                    <button className="req-reject-btn" onClick={() => {reject_handler(request)}}>Reject</button>
                                 </div>
                             </td>
                         </tr>
@@ -76,6 +125,7 @@ function CompanyRegisterRequestList() {
                     </button>
                 ))}
             </div>
+            <div style={{display: (requests.length == 0) ? "block" : "none"}}><EmptyContent /></div>
         </div>
     )
 }

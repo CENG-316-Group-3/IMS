@@ -86,7 +86,7 @@ const startRabbitMQConsumer = () => {
                                 await AnnouncementController.approveAnnouncement(msgContent, channel, message);
                                 break;
                             case 'admin.waiting-announcements.reject':
-                                await AnnouncementController.deleteInternshipAnnouncement(msgContent, channel, message);
+                                await AnnouncementController.rejectInternshipAnnouncement(msgContent, channel, message);
                                 break;
                             case 'admin.coordinator-announcement.create':
                                 await AnnouncementController.createCoordinatorAnnouncement(msgContent,channel,message);
