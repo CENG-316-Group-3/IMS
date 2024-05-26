@@ -92,8 +92,6 @@ exports.sendApproveAnnouncementNotification = async(msgContent)=> {
     const announcement_data = announcement[0].dataValues;
     const notification_type = "Announcement Approvation";  
     const title = `Your request is accepted for ${announcement_data.title}` ;
-    console.log("küçük ünal");
-    console.log(msgContent);
     const updatedMsgContent = { 
         ...msgContent, 
         receiver_mail: announcement_data.user_mail, 
@@ -105,9 +103,7 @@ exports.sendApproveAnnouncementNotification = async(msgContent)=> {
 }
 
 exports.sendRejectAnnouncementNotification = async(msgContent)=> {
-    const announcement = await AnnouncementRepository.getAnnouncementById(msgContent.id);
-    console.log("küçük eşek");
-    console.log(announcement);
+    const announcement = await AnnouncementRepository.getAnnouncementById(msgContent.id); 
     const announcement_data = announcement[0].dataValues;
     const notification_type = "Announcement Rejection";  
     const title = `Your request is rejected for ${announcement_data.title}` ;
@@ -127,8 +123,6 @@ exports.sendRejectAnnouncementNotification = async(msgContent)=> {
 
 exports.sendRejectAnnouncementNotificationMail = async(msgContent)=> {
     const announcement = await AnnouncementRepository.getAnnouncementById(msgContent.id);
-    console.log("küçük eşek");
-    console.log(announcement);
     const announcement_data = announcement[0].dataValues;
     const notification_type = "Announcement Rejection";  
     const title = `Your request is rejected for ${announcement_data.title}` ;

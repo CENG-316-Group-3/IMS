@@ -82,7 +82,6 @@ exports.deleteInternshipAnnouncement = async (msgContent, channel, message) => {
 exports.rejectInternshipAnnouncement = async (msgContent, channel, message) => {
     try {
         const exchange = 'direct_logs';
-        await notification_connection.sendRejectAnnouncementNotification(msgContent);
         await notification_connection.sendRejectAnnouncementNotificationMail(msgContent);
         await AnnouncementRepository.deleteAnnouncementById(msgContent.id);
         channel.publish(exchange, 'success', Buffer.from(JSON.stringify({status: 200})),{
