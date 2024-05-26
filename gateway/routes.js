@@ -1,9 +1,9 @@
 const express = require('express');
 router = express.Router();
-loginController = require('./login-controller');
-authMiddleware = require('./auth-middleware');
-checkRole = require('./checkRole');
-announcementController = require('./announcement');
+const loginController = require('./login-controller');
+const  authMiddleware = require('./auth-middleware');
+const checkRole = require('./checkRole');
+const announcementController = require('./announcement');
 
 //logout
 
@@ -21,10 +21,12 @@ router
     .route('/login/coordinator')
     .post(loginController.coordinatorLogin)
 
+    //company login
 router
     .route('/login/company')
     .post(loginController.companyLogin)
 
+    //company register
 router
     .route('/register/company')
     .post(loginController.companyRegister)
@@ -36,16 +38,22 @@ router
 
 
 //coordinator approves company registration
-router
+/* router
     .route('/evaluvate-registration')
     .get(checkRole.isCoordinator,loginController.getNotApprovedList)
-    .post(loginController.evaluateRegistration)
+    //.post(checkRole.isCoordinator,loginController.evaluateRegistration)
+ */
 
 
 
 
 
-//announcement
+
+
+
+
+
+//*************************announcement*********************
 router
     .route('/get-announcement/:id')
     .get(announcementController.getInternshipAnnouncement);
@@ -70,5 +78,17 @@ router
 router
     .route('/get-announcement')
     .get(announcementController.getInternshipAnnouncement)
+
+
+
+//***************aplication *********************
+router
+    .route('/get-applications')
+
+router
+    .route('/get-application-letter-details')
+
+
+
 
 module.exports = router;

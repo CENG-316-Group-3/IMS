@@ -31,6 +31,11 @@ const Company = sequelize.define('Company',{
     status:{
         type:DataTypes.STRING,
         defaultValue:'not approved'
+    },
+    resetToken:{
+        type:DataTypes.STRING,
+        allowNull:true,
+        unique:true
     }
 })
 

@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useUser } from '../contexts/UserContext';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../styles/CompanyRegister.css";
 import { usePopup } from '../contexts/PopUpContext';
 
 function CompanyRegister() {
-    const {user} = useUser();
     const { showPopup } = usePopup();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -37,7 +35,7 @@ function CompanyRegister() {
                 });
         
                 if (response.status === 200) {
-                    showPopup("success", "Registered successfully");
+                    showPopup("info", "Registered request sent");
                     navigate("/company-login");
                 } else {
                     setEmail("");

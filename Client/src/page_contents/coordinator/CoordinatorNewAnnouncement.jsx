@@ -17,20 +17,20 @@ function CoordinatorNewAnnouncement() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!file)
-            showPopup("error", "You need to select a file !");
+        if (description === "")
+            showPopup("error", "Description cannot be empty !");
         else if (title === "")
             showPopup("error", "Title cannot be empty !");
         else;
-        //send_data();
+            send_data();
     };
 
     const send_data = async () => {
         try {
-            const response = await fetch(`//TODO//`, {
+            const response = await fetch(`http://localhost:3000/ims/admin/upload-announcement`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ companyMail: user.user.companyMail })
+                body: JSON.stringify({ user_mail: user.user.coordinatorMail, title, content: description })
             });
 
             if (response.status === 200) {
@@ -38,7 +38,7 @@ function CoordinatorNewAnnouncement() {
                 handleCancel();
             } else {
                 if (response.status === 400)
-                    showPopup("error", "Given company does not exist !");
+                    showPopup("error", "Given coordinator does not exist !");
                 else if (response.status === 500)
                     showPopup("error", "Internal server error occured !");
                 handleCancel();

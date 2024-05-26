@@ -10,23 +10,36 @@ require('dotenv').config({path:path});
 
 const consumeMessages = async () => {
     try {
-        let message;
       const connection = await amqp.connect(process.env.RABBITURL);
       const channel = await connection.createChannel();
   
-      await channel.assertExchange(process.env.RABBITEXCHANGE, 'direct');
+      await channel.assertExchange(process.env.RABBITEXCHANGE, 'direct', { durable: false });
   
-      const q = await channel.assertQueue('registrationDecision', { durable: true });
+      const q = await channel.assertQueue('registrationDecision', { durable: false });
   
-      await channel.bindQueue(q.queue, process.env.RABBITEXCHANGE, 'notApprovedCompany');
+      await channel.bindQueue(q.queue, process.env.RABBITEXCHANGE, 'decision/to/registration/');
   
       await channel.consume(q.queue, async (msg) => {
-        const data = JSON.parse(msg.content.toString());
-        message = data;
-        console.log(data);
-
-        await decisionToRegistration(data.message);
-        channel.ack(msg);
+        if (msg !== null) {
+          const data = JSON.parse(msg.content.toString());
+          console.log('Received message:', data);
+          //console.log(msg.properties);
+  
+          try {
+            await decisionToRegistration(data);
+  
+            await channel.publish(process.env.RABBITEXCHANGE, 'success', Buffer.from('decided'),{
+                correlationId: msg.properties.correlationId
+            });
+            const message = {receiver_mail:data.companyMail,title:'Registration to IMS',content:`Your registration request is ${data.decision}`};
+            await channel.publish(process.env.RABBITEXCHANGE,'notification.send_mail', Buffer.from(JSON.stringify(message)))
+            //console.log('Published feedback message to notApprovedCompanyBack');
+          } catch (error) {
+            console.error('Error processing message:', error);
+          }
+  
+          channel.ack(msg);
+        }
       });
   
       console.log(`Waiting for messages in queue: ${q.queue}`);
@@ -40,12 +53,18 @@ const consumeMessages = async () => {
 //accept or reject company
 
 const decisionToRegistration = async (msg) =>{
+    console.log(msg);
     const decision = msg.decision;
+    console.log(typeof(msg.companyMail));
     const company = await Company.findOne({where:{companyMail:msg.companyMail}});
+    console.log(company);
     
     if(decision ==='approve'){
         company.status = 'approved';
         await company.save();
+    }
+    if(decision === "reject"){
+        Company.destroy({where:{companyMail:company.companyMail}});
     }
 };
 

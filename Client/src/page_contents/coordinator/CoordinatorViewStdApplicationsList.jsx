@@ -1,27 +1,41 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import "../../styles/StudentApplicationsList.css";
-
+import { usePopup } from '../../contexts/PopUpContext';
+import { useNavigate } from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 6;
 
 function CoordinatorViewStdApplicationsList() {
+    const { showPopup } = usePopup();
+    const navigate = useNavigate();
+    const [applications, setApplications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const applications = [
-        { id: 1, company_name: 'Company A', date: '2024-05-21', student_name: 'Student 1', application_status: 'Application Letter' },
-        { id: 2, company_name: 'Company A', date: '2024-05-20', student_name: 'Student 2', application_status: 'Application Form' },
-        { id: 3, company_name: 'Company A', date: '2024-05-19', student_name: 'Student 3 ', application_status: 'Application Form' },
-        { id: 4, company_name: 'Company A', date: '2024-05-18', student_name: 'Student 4', application_status: 'Application Form' },
-        { id: 5, company_name: 'Company A', date: '2024-05-17', student_name: 'Student 5', application_status: 'Application Letter' },
-        { id: 6, company_name: 'Company A', date: '2024-05-16', student_name: 'Student 6', application_status: 'Application Letter' },
-        { id: 7, company_name: 'Company A', date: '2024-05-15', student_name: 'Student 7', application_status: 'Application Letter' },
-        { id: 8, company_name: 'Company A', date: '2024-05-14', student_name: 'Student 8', application_status: 'Application Form' },
-        { id: 9, company_name: 'Company A', date: '2024-05-13', student_name: 'Student 9', application_status: 'Application Form' },
-        { id: 10, company_name: 'Company A', date: '2024-05-12', student_name: 'Student 10', application_status: 'Application Letter' },
-        { id: 11, company_name: 'Company A', date: '2024-05-11', student_name: 'Student 11', application_status: 'Application Form' },
-        { id: 12, company_name: 'Company A', date: '2024-05-10', student_name: 'Student 12', application_status: 'Application Form' },
-        // Daha fazla veri eklenebilir
-    ];
+    useEffect(() => {
+        fetch_data();
+    }, [applications]);
+
+    const fetch_data = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/ims/admin/coordinator-announcements`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+    
+            if (response.status === 200) {
+                setApplications( await response.json()); // Şu json düzelt
+            } else {
+                if (response.status === 400)
+                    showPopup("error", "Given coordinator does not exist !");
+                else if (response.status === 500)
+                    showPopup("error", "Internal server error occured !");
+                navigate("/main");
+            }
+        } catch (error) {
+            showPopup("error", "There is a problem in connection");
+            navigate("/main");
+        }
+    };
 
     const handleClick = (pageNumber) => {
         setCurrentPage(pageNumber);
