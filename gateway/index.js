@@ -371,7 +371,7 @@ app.put('/summerPracticeCoordinator/deleteApplication', async(req, res) => {
 
 
 // ******************Announcement *****************************
-app.post('/ims/company/get-announcement',checkRole.isCompany, async(req, res) => { 
+app.post('/ims/company/get-announcement', async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -405,7 +405,7 @@ app.post('/ims/company/announcement-list', async(req, res) => {
 });
 
 
-app.get('/ims/admin/get-announcement',checkRole.isCoordinator, async(req, res) => { 
+app.post('/ims/admin/get-announcement', async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -421,7 +421,7 @@ app.get('/ims/admin/get-announcement',checkRole.isCoordinator, async(req, res) =
     
 });
 
-app.get('/ims/admin/internship-announcement-list', async(req, res) => { 
+app.post('/ims/admin/internship-announcement-list', async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -472,7 +472,7 @@ app.get('/ims/admin/waiting-announcement-list', async(req, res) => {
 });
 
 
-app.get('/ims/student/get-announcement',checkRole.isStudent, async(req, res) => { 
+app.post('/ims/student/get-announcement',checkRole.isStudent, async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -644,7 +644,7 @@ app.delete('/ims/admin/delete-announcement', async(req, res) => {
 
 
 
-app.get('/ims/admin/coordinator-announcements', async(req, res) => { 
+app.post('/ims/admin/coordinator-announcements', async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -659,7 +659,7 @@ app.get('/ims/admin/coordinator-announcements', async(req, res) => {
     }
 });
 
-app.get('/ims/admin/coordinator-announcement', async(req, res) => { 
+app.post('/ims/admin/coordinator-announcement', async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
