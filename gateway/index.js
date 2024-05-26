@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const amqp = require('amqplib/callback_api');
 const checkRole = require('./checkRole');
-const axios = require("axios");
+const axios = require('axios');
 
 
 const path = "./config.env"
@@ -130,6 +130,7 @@ app.post('/ims/evaluvate-registration', async (req,res) =>{
 
 app.get('/ims/evaluvate-registration', async (req,res) =>{
     try {
+        console.log('geldim amk')
         const response = await axios.get(`http://localhost:3001/ims/auth-service/api/company/notApprovedList`);
         console.log(response.data);
         return res.status(200).json({
@@ -137,8 +138,14 @@ app.get('/ims/evaluvate-registration', async (req,res) =>{
         });
     } catch (error) {
         res.status(400).json({error:error})
-    }
+    }
+    
+
+
+
 });
+
+
 
 //**************************serhat ********************** */
 app.post('/student/applyToInternship', async(req, res) => { // to send application letter
@@ -364,7 +371,7 @@ app.put('/summerPracticeCoordinator/deleteApplication', async(req, res) => {
 
 
 // ******************Announcement *****************************
-app.post('/ims/company/get-announcement', async(req, res) => { 
+app.post('/ims/company/get-announcement',checkRole.isCompany, async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -398,7 +405,7 @@ app.post('/ims/company/announcement-list', async(req, res) => {
 });
 
 
-app.post('/ims/admin/get-announcement', async(req, res) => { 
+app.get('/ims/admin/get-announcement',checkRole.isCoordinator, async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -446,15 +453,17 @@ app.get('/ims/admin/delete-announcement', async(req, res) => {
     
 });
 
-app.post('/ims/admin/waiting-announcement-list', async(req, res) => { 
+app.get('/ims/admin/waiting-announcement-list', async(req, res) => { 
     try{
         const content = req.body;
-        const msg = JSON.stringify(content);""
+        const msg = JSON.stringify(content);
         const correlationId = generateUuid();
         emitMessageCorrelationId('admin.waiting-announcements.list', msg, correlationId);
         const response = await waitForResponse(correlationId);
         const parsedResponse = JSON.parse(response);
+        c
         res.status(parsedResponse.status).send(parsedResponse.message);
+
     }
     catch(error){
         res.status(400).send(error);
@@ -463,7 +472,7 @@ app.post('/ims/admin/waiting-announcement-list', async(req, res) => {
 });
 
 
-app.post('/ims/student/get-announcement', async(req, res) => { 
+app.get('/ims/student/get-announcement',checkRole.isStudent, async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -486,7 +495,27 @@ app.get('/ims/student/announcement-list', async(req, res) => {
         emitMessageCorrelationId('student.internship-announcements.list', msg, correlationId);
         const response = await waitForResponse(correlationId);
         const parsedResponse = JSON.parse(response);
+        console.log(parsedResponse);
+
+        //parsedResponse.message.user_mail
+        if(parsedResponse.message[0].user_mail){
+            console.log('burdayım lannnnn');
+            console.log(parsedResponse.message.length)
+            for (let i = 0; i < parsedResponse.message.length; i++) {
+                console.log(parsedResponse.message[i].user_mail)
+                //console.log(array[i]); // Output each element of the array
+                const  authResponse = await axios.get(`http://localhost:3001/ims/auth-service/api/company/${parsedResponse.message[i].user_mail}`);
+                parsedResponse.message[i].userName = authResponse.data.companyName
+                console.log(authResponse.data);
+            }
+           
+            
+            //authResponse.message.userName = 
+        }
+        
+        
         res.status(parsedResponse.status).send(parsedResponse.message);
+
     }
     catch(error){
         res.status(400).send(error);
@@ -615,7 +644,7 @@ app.delete('/ims/admin/delete-announcement', async(req, res) => {
 
 
 
-app.post('/ims/admin/coordinator-announcements', async(req, res) => { 
+app.get('/ims/admin/coordinator-announcements', async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -630,7 +659,7 @@ app.post('/ims/admin/coordinator-announcements', async(req, res) => {
     }
 });
 
-app.post('/ims/admin/coordinator-announcement', async(req, res) => { 
+app.get('/ims/admin/coordinator-announcement', async(req, res) => { 
     try{
         const content = req.body;
         const msg = JSON.stringify(content);
@@ -711,7 +740,27 @@ app.get('/ims/notification', async(req, res) => {
 
 
 //login-register
+app.post('/ims/company/send-reset-link', async (req,res) =>{
+    try {
+        const response = await axios.post(`http://localhost:3001/ims/auth-service/api/company/resetPassword`,req.body);
+        res.status(200).json({message:'reset link sent to email'})
+    } catch (error) {
+        res.status(400).json({message:'bad request'})
+    }
+})
+
+app.post('/ims/company/reset/:id', async (req,res) =>{
+    try {
+        const id = req.params.id;
+        
+        const response = await axios.post(`http://localhost:3001/ims/auth-service/api/company/setNewPassword/${id}`,req.body);
+        res.status(200).json({message:'password changed'})
+    } catch (error) {
+        res.status(400).json({message:'bad request'})
+    }
+})
 app.use('/ims',router);
+
 
 
 

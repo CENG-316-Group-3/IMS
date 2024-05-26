@@ -2,15 +2,18 @@ const Student = require('../models/Student');
 const makeLogin = require('../utils/obs-req');
 const JWT = require('../utils/jwt');
 const jwt = new JWT();
+const axios = require('axios');
 
 //student login-register
 exports.login = async(req,res) =>{
-    try {       
+    try {  
+        
+        
         const {email,password} = req.body;
         console.log(email);
         var isNew = false;
         const loginResponse = await makeLogin(email,password);
-        console.log(loginResponse);
+
         if(loginResponse.data.status ==='success'){
             var student = await Student.findOne({where:{studentMail:email}});
             if(!student){
@@ -26,6 +29,8 @@ exports.login = async(req,res) =>{
                 });
                 student = newStudent;
                 isNew = true
+                const response = await axios.post(`localhost:4002/pushStudent`,req.body); 
+                //localhost:4002/pushStudent
                 
 
             }
