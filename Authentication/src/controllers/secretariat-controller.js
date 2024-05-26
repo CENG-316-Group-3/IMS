@@ -32,6 +32,7 @@ exports.login = async(req,res) =>{
 
         console.log('here');
         const secretariat = await Secretariat.findOne({where:{departmentMail:req.body.departmentMail}});
+        console.log(secretariat);
         if(!secretariat){
             throw new Error('Secretariat not found');
 
@@ -44,6 +45,7 @@ exports.login = async(req,res) =>{
         
         
         //generate token
+        console.log('hghbfgh');
         const token = await jwt.generateSecretariatToken(secretariat);
         res.cookie('token',token,{httpOnly:true,secure:true});
         res.status(200).json({
