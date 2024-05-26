@@ -205,7 +205,7 @@ async function processDepartmentSecrataryuploadSSI(message){
             title : 'Departmant Secratary sent SSI document',
             content: 'Departmant Secratary sent SSI document'
             //html: "<h1>texthtml</h1>"
-            }
+        }
         
         if (response.includes('SSI document created')) {
             await processSSIDocumentCreated(message);
@@ -589,7 +589,7 @@ async function processSendFeedBack(message) {
         if (application.status === 'application letter created'){
             newStatus = 'application letter rejected by company and feedback is sent';
             whoMade = "summer practise coordinator";
-        }else if(application.status === 'application form created'){
+        }else if(application.status === 'application form is created'){
             newStatus = 'application form rejected by company and feedback is sent';
             whoMade = companyMail;
         }else if(application.status === 'application form is accepted by company'){
@@ -605,15 +605,12 @@ async function processSendFeedBack(message) {
         }else if(application.status === 'application form is rejected by summer practise coordinator'){
             newStatus = 'application form rejected by summerPractiseCoordinator and feedback is sent';
             whoMade = "summer practise coordinator";
+        }else{
+            throw new Error("Not correct state");
         }
 
         // Check if the current status matches the allowed statuses
-        const allowedStatuses = ['application letter created', 'application form created', 'application form is accepted by company'];
-        if (!allowedStatuses.includes(application.status)) {
-            console.log('Current status does not allow this update');
-            emitMessageCorrelationId('success',JSON.stringify({ message: 'Current status does not allow this update', stat : 400 }), message.properties.correlationId);
-            return;
-        }
+      
 
         // Update the application status and content
         
@@ -640,10 +637,11 @@ async function processSendFeedBack(message) {
         if (result[0] === 0) {
             console.log('No changes made to the application');
             emitMessageCorrelationId('success', JSON.stringify({ message: 'No changes made to the application' , stat : 400}), message.properties.correlationId);
-            emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);     
+            
         } else {
             console.log('Application status updated successfully');
             emitMessageCorrelationId('success', JSON.stringify({ message: ' feedback send successfully',stat : 200 }), message.properties.correlationId);
+            emitMessageCorrelationId('notification.send_mail',JSON.stringify(mailOptions) , message.properties.correlationId);     
         }
     } catch (error) {
         console.error('Error updating application status:', error);
