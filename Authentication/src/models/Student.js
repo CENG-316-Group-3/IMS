@@ -29,6 +29,25 @@ const Student = sequelize.define('Student',{
         type:DataTypes.INTEGER,
         allowNull:true, 
         
+    },
+
+    faculty:{
+        type:DataTypes.STRING,
+        allowNull:false,
+    }, 
+    department:{
+        type:DataTypes.STRING,
+        allowNull:false,
+        
+    },
+    
+    nationalIdentityNumber:{
+        type:DataTypes.STRING,
+        allowNull:false,   
+    },
+    telephone:{
+        type:DataTypes.STRING,
+        allowNull:false,   
     }
 });
 

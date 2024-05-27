@@ -2,13 +2,18 @@ const Student = require('../models/Student');
 const makeLogin = require('../utils/obs-req');
 const JWT = require('../utils/jwt');
 const jwt = new JWT();
+const axios = require('axios');
 
 //student login-register
 exports.login = async(req,res) =>{
-    try {       
+    try {  
+        
+        
         const {email,password} = req.body;
+        console.log(email);
         var isNew = false;
         const loginResponse = await makeLogin(email,password);
+
         if(loginResponse.data.status ==='success'){
             var student = await Student.findOne({where:{studentMail:email}});
             if(!student){
@@ -16,10 +21,16 @@ exports.login = async(req,res) =>{
                     studentMail:loginResponse.data.loggedStudent.studentMail,
                     studentNumber:loginResponse.data.loggedStudent.studentNumber,
                     firstName:loginResponse.data.loggedStudent.firstName,
-                    lastName:loginResponse.data.loggedStudent.lastName               
+                    lastName:loginResponse.data.loggedStudent.lastName,
+                    faculty: loginResponse.data.loggedStudent.faculty,
+                    department:loginResponse.data.loggedStudent.department,
+                    nationalIdentityNumber:loginResponse.data.loggedStudent.nationalIdentityNumber,
+                    telephone: loginResponse.data.loggedStudent.telephone    
                 });
                 student = newStudent;
                 isNew = true
+                const response = await axios.post(`localhost:5000/pushStudent`,req.body); 
+                //localhost:4002/pushStudent
                 
 
             }
@@ -42,7 +53,7 @@ exports.login = async(req,res) =>{
         }
     
     } catch (error) {
-        res.status(400).json({
+        res.status(401).json({
             status:'fail',
             error:error
 

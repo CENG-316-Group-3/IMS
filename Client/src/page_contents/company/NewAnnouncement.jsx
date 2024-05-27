@@ -23,15 +23,15 @@ const NewAnnouncement = () => {
         else if(position === "")
             showPopup("error", "Position cannot be empty !");
         else;
-            //send_data();
+            send_data();
     };
 
     const send_data = async () => {
         try {
-            const response = await fetch(`//TODO//`, {
+            const response = await fetch(`http://localhost:3000/ims/company/create-announcement`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ companyMail: user.user.companyMail })
+                body: JSON.stringify({ user_mail: user.user.companyMail, title, position, content: description })
             });
     
             if (response.status === 200) {

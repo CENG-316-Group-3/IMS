@@ -7,32 +7,25 @@ import { useNavigate } from 'react-router-dom';
 import EmptyContent from "../../components/EmptyContent";
 
 function Applications() {
-    // const a = [
-    //     { id: 1, title: 'Application 1', date: '2024-05-21', student_name: 'Student 1', application_status: 'Application Letter' },
-    //     { id: 2, title: 'Application 2', date: '2024-05-20', student_name: 'Student 2', application_status: 'Application Form' },
-    //     { id: 3, title: 'Application 3', date: '2024-05-19', student_name: 'Student 3 ', application_status: 'Application Letter' },
-    //     { id: 4, title: 'Application 4', date: '2024-05-18', student_name: 'Student 4', application_status: 'Application Form' },
-    // ];
-
     const { user } = useUser();
     const { showPopup } = usePopup();
     const navigate = useNavigate();
     const [applications, setApplications] = useState([]);
 
     useEffect(() => {
-        //fetch_data();
+        fetch_data();
     }, []);
 
     const fetch_data = async () => {
         try {
-            const response = await fetch(`//TODO//`, {
+            const response = await fetch(`http://localhost:3000/company/getApplications`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ companyMail: user.user.companyMail })
             });
-    
             if (response.status === 200) {
-                /* TODO with response data setStates */
+                const json_data = await response.json();
+                setApplications(json_data.applications);
             } else {
                 if (response.status === 400)
                     showPopup("error", "Given company does not exist !");
@@ -47,7 +40,7 @@ function Applications() {
     };
 
     const handleCheck = (id) => {
-        navigate(`/company_an_application/:${id}`);
+        navigate(`/company_an_application/${id}`);
     };
 
     return (
@@ -64,16 +57,16 @@ function Applications() {
                     </tr>
                 </thead>
                 <tbody>
-                    {applications.map((application) => (
-                        <tr key={application.id}>
+                    {applications.map((application, key) => (
+                        <tr key={key}>
                             <td>{application.title}</td>
-                            <td>{application.date}</td>
-                            <td>{application.student_name}</td>
-                            <td>{application.application_status}</td>
+                            <td>{new Date(application.createdAt).toLocaleString()}</td>
+                            <td>{application.studentMail}</td>
+                            <td>{application.status}</td>
                             <td >
                                 <button
                                     className="edit-btn"
-                                    onClick={() => handleCheck(application.id)}
+                                    onClick={() => handleCheck(application.announcementId)}
                                 >
                                     CHECK
                                 </button>

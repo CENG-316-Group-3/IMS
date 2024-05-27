@@ -53,7 +53,7 @@ h2 #std-anapp-name {
 }
 
 #open-forms-container #btn-open-form {
-    background-color: var(--gray);
+    background-color: var(--light_green);
     color: white;
     padding: 10px 20px;
     border-radius: 10px;
@@ -68,7 +68,7 @@ h2 #std-anapp-name {
 }
 
 #open-forms-container #btn-open-form:hover {
-    background-color: var(--dark_gray);
+    background-color: var(--dark_green);
     color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }

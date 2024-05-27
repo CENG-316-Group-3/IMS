@@ -1,5 +1,9 @@
 const AnnouncementRepository = require('../repositories/announcement_repository');
 
+
+const notification_connection = require("../service_connections/notification_connection");
+
+
 // Function to handle getAnnouncementbyId
 exports.getAnnouncementById = async (msgContent, channel, message) => {
     try {
@@ -68,6 +72,21 @@ exports.deleteInternshipAnnouncement = async (msgContent, channel, message) => {
         await AnnouncementRepository.deleteAnnouncementById(msgContent.id);
         channel.publish(exchange, 'success', Buffer.from(JSON.stringify({status: 200})),{
             correlationId: message.properties.correlationId});
+    } catch (error) {
+        console.error(error);
+        channel.publish(exchange, 'success', Buffer.from(JSON.stringify({ status: 400 })),{
+            correlationId: message.properties.correlationId});
+    }
+};
+
+exports.rejectInternshipAnnouncement = async (msgContent, channel, message) => {
+    try {
+        const exchange = 'direct_logs';
+        await notification_connection.sendRejectAnnouncementNotificationMail(msgContent);
+        await AnnouncementRepository.deleteAnnouncementById(msgContent.id);
+        channel.publish(exchange, 'success', Buffer.from(JSON.stringify({status: 200})),{
+            correlationId: message.properties.correlationId});
+        
     } catch (error) {
         console.error(error);
         channel.publish(exchange, 'success', Buffer.from(JSON.stringify({ status: 400 })),{
@@ -151,13 +170,16 @@ exports.approveAnnouncement = async (msgContent, channel, message) => {
         const exchange = 'direct_logs';  
         await AnnouncementRepository.updateAnnouncementStatus(msgContent.id, "approved");
         channel.publish(exchange, 'success', Buffer.from(JSON.stringify({status: 200})),{
-            correlationId: message.properties.correlationId});
+            correlationId: message.properties.correlationId});        
+        notification_connection.sendApproveAnnouncementNotification(msgContent)    
     } catch (error) {
         console.error(error);
         channel.publish(exchange, 'success', Buffer.from(JSON.stringify({ status: 400 })),{
             correlationId: message.properties.correlationId});
     }
 };
+
+
 
 // Function to handle getApprovedAnnouncements
 exports.getApprovedAnnouncements = async (msgContent, channel, message) => {

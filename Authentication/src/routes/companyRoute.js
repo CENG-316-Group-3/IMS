@@ -14,8 +14,19 @@ companyRouter
     .route('/notApprovedList')
     .get(companyController.getNotApprovedList)
 
+companyRouter
+    .route('/resetPassword')
+    .post(companyController.sendResetLink);
 
 
+companyRouter
+    .route('/setNewPassword/:id')
+    .post(companyController.resetPassword);
+
+
+companyRouter
+    .route('/:mail')
+    .get(companyController.getCompany);
 
 
 module.exports = companyRouter;

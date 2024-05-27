@@ -1,0 +1,30 @@
+.message-detail-container {
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    width: 80%;
+  }
+  
+  .message-detail-container h1 {
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .message-detail-container p {
+    margin: 10px 0;
+    line-height: 1.5;
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .message-detail-container strong {
+    color: #333;
+    font-weight: normal;
+    font-size: 18px;
+  }
+  

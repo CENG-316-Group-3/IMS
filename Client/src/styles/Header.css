@@ -60,3 +60,29 @@
 .header_user_icon:hover {
     cursor: pointer;
 }
+
+.inbox_part{
+    margin-left: 30px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.inbox_button{
+    width: 25px;
+    height: 25px;
+}
+
+.inbox_button:hover{
+    cursor: pointer;
+}
+
+.inbox_count_part{
+    background-color: red;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    color: white;
+    font-size: 10px;
+    text-align: center;
+}

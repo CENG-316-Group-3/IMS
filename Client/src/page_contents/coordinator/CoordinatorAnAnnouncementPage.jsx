@@ -1,16 +1,49 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import '../../styles/CoordinatorNewAnnouncement.css';
 import { useUser } from "../../contexts/UserContext";
 import { usePopup } from '../../contexts/PopUpContext';
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 
 function CoordinatorAnAnnouncementPage() {
-    const { user } = useUser();
+    let { id } = useParams();
     const { showPopup } = usePopup();
+    const navigate = useNavigate();
+    const { user } = useUser();
     const [file, setFile] = useState(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const fileInputRef = useRef(null);
+
+    useEffect(() => {
+        fetch_data();
+    }, []);
+
+    const fetch_data = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/ims/admin/coordinator-announcement`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+    
+            if (response.status === 200) {
+                const json_data = await response.json();
+                setTitle(json_data[0].title);
+                setDescription(json_data[0].content);
+            } else {
+                if (response.status === 400)
+                    showPopup("error", "Given announcement does not exist !");
+                else if (response.status === 500)
+                    showPopup("error", "Internal server error occured !");
+                navigate("/main");
+            }
+        } catch (error) {
+            showPopup("error", "There is a problem in connection");
+            navigate("/main");
+        }
+    };
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -18,28 +51,28 @@ function CoordinatorAnAnnouncementPage() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!file)
-            showPopup("error", "You need to select a file !");
+        if (description === "")
+            showPopup("error", "Description cannot be empty !");
         else if (title === "")
             showPopup("error", "Title cannot be empty !");
         else;
-        //send_data();
+            send_data();
     };
 
     const send_data = async () => {
         try {
-            const response = await fetch(`//TODO//`, {
-                method: 'POST',
+            const response = await fetch(`http://localhost:3000/ims/admin/update-announcement`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ companyMail: user.user.companyMail })
+                body: JSON.stringify({ user_mail: user.user.coordinatorMail, id, title, content: description })
             });
 
             if (response.status === 200) {
-                showPopup("success", "Announcement published successfully");
+                showPopup("success", "Announcement updated successfully");
                 handleCancel();
             } else {
                 if (response.status === 400)
-                    showPopup("error", "Given company does not exist !");
+                    showPopup("error", "Given announcement does not exist !");
                 else if (response.status === 500)
                     showPopup("error", "Internal server error occured !");
                 handleCancel();
@@ -56,6 +89,7 @@ function CoordinatorAnAnnouncementPage() {
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
+        navigate("/coordinator_my_announcements");
     };
     return (
         <div className="announcement-form-container">
